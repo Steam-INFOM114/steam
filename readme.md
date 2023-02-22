@@ -8,9 +8,14 @@ TODO
 
 ## How-to
 ### Développement
-1. Installer Python et Django. Voir [ce tutoriel](https://docs.djangoproject.com/en/4.1/intro/install/) pour plus d'informations.
+1. Installer docker
 
-Il est alors possible de lancer le serveur avec la commande `python manage.py runserver` depuis le dossier `src`.
+2. Depuis le répértoire où se trouve le ficher `docker-compose.dev.yml` exécuter la commande
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+* le serveur de développement de django tourne sur: `127.0.0.1:8000`
 
 ### Déploiement
 
