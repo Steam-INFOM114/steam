@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     # 3rd party
     'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'bootstrap4',
+
+    # My apps
+    'test_plotly',
 ]
 
 # Standard Django middleware with the addition of both
