@@ -37,18 +37,31 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 3rd party
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'bootstrap4',
 ]
 
+# Standard Django middleware with the addition of both
+# whitenoise and django_plotly_dash items
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
+      'django.middleware.security.SecurityMiddleware',
+
+      'whitenoise.middleware.WhiteNoiseMiddleware', # for serving static files
+
+      'django.contrib.sessions.middleware.SessionMiddleware',
+      'django.middleware.common.CommonMiddleware',
+      'django.middleware.csrf.CsrfViewMiddleware',
+      'django.contrib.auth.middleware.AuthenticationMiddleware',
+      'django.contrib.messages.middleware.MessageMiddleware',
+
+      'django_plotly_dash.middleware.BaseMiddleware',
+      'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
+
+      'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  ]
 ROOT_URLCONF = 'steam.urls'
 
 TEMPLATES = [
@@ -123,3 +136,32 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Needed for Django Plotly Dash. This allow the use of frames within HTML documents
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Staticfiles finders for locating dash app assets and related files
+STATICFILES_FINDERS = [
+
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    'django_plotly_dash.finders.DashAssetFinder',
+    'django_plotly_dash.finders.DashComponentFinder',
+    'django_plotly_dash.finders.DashAppDirectoryFinder',
+]
+
+# Plotly components containing static content that should
+# be handled by the Django staticfiles infrastructure
+PLOTLY_COMPONENTS = [
+
+    # Common components (ie within dash itself) are automatically added
+
+    # django-plotly-dash components
+    'dpd_components',
+    # static support if serving local assets
+    'dpd_static_support',
+
+    # Other components, as needed
+    'dash_bootstrap_components',
+]
