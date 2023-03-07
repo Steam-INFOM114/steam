@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Project
 from django.contrib.auth.models import User
@@ -33,3 +33,8 @@ class ProjectUpdateView(UpdateView):
         context = super(ProjectUpdateView, self).get_context_data(**kwargs)
         context['users'] = User.objects.all()
         return context
+
+
+class ProjectDeleteView(DeleteView):
+    model = Project
+    success_url = reverse_lazy('project-list')
