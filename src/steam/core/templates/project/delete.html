@@ -1,0 +1,21 @@
+<!-- Deletion confirmation modal -->
+<div class="modal fade" id="project{{ project.id }}Modal" tabindex="-1" aria-labelledby="project{{ project.id }}ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="project{{ project.id }}ModalLabel">Supprimer {{ project.name }}</h1>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer le projet nommé <b>{{ project.name }}</b>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+        <form method="post" action="{% url 'project-delete' project.id %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
