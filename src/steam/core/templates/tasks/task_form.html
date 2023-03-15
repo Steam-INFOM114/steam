@@ -1,9 +1,4 @@
 {% extends "base.html" %}
-
-{% block title %}{% if task.pk %}Modifier{% else %}Créer{% endif %} une tâche{% endblock %}
-
-{% load crispy_forms_tags %}
-
 {% block content %}
 
 <div class="container mt-4 mb-4">
@@ -11,14 +6,26 @@
         <div class="col-xl-9">
             <div class="card">
                 <div class="card-header">
-                    <h2>{% if task.pk %}Modifier{% else %}Créer{% endif %} une tâche</h2>
+                    <h2>{% if task.pk %}Modifier{% else %}Créer{% endif %} une tache</h2>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="">
                         {% csrf_token %}
-                        {{ form|crispy }}
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">{% if task.pk %}Modifier{% else %}Créer{% endif %}</button>
+                        {% for field in form %}
+                            {% if field.name != "status" or task.pk %}
+                                <div class="row align-items-center py-3">
+                                    <div class="col-md-3 ps-5">
+                                        <h6 class="mb-0">{{ field.label_tag }}</h6>
+                                    </div>
+                                    <div class="col-md-9 pe-5">
+                                        {{ field }}
+                                    </div>
+                                </div>
+                            <hr class="mx-n3">
+                            {% endif %}
+                        {% endfor %}
+                        <div class="px-5 py-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
                         </div>
                     </form>
                 </div>
