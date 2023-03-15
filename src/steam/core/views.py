@@ -6,9 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ProjectForm
-from .forms import CustomUserCreationForm
-from django.contrib.auth.decorators import login_required
+from .forms import ProjectForm, CustomUserCreationForm
 
 class ProjectListView(ListView):
     model = Project
@@ -47,8 +45,6 @@ class ProjectDeleteView(DeleteView):
 
 def loginPage(request):
 
-    page = 'login'
-
     if request.user.is_authenticated:
         return redirect('project-list')
 
@@ -63,27 +59,23 @@ def loginPage(request):
 
         user = authenticate(request, username=username, password=password) #make sure that the credentials are corrects and store user object based on username and password
 
-        if user is not None: 
+        if user is not None and user.is_active:
             login(request,user) #log the user in create a session
             return redirect('project-list')
-        else: 
+        else:
             messages.error(request, 'Username OR Password does not exists')
-    context = {'page':page}
-    return render(request, 'users/login.html', context)
+
+    return render(request, 'users/login.html')
 
 
 def registerPage(request):
-    
+
     form = UserCreationForm()
 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.first_name = form.cleaned_data.get('first_name')
-            user.last_name = form.cleaned_data.get('last_name')
-            user.email = form.cleaned_data.get('email')
-            user.save()
+            form.save()
             # Log in the user
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
@@ -92,7 +84,7 @@ def registerPage(request):
             return redirect('project-list')
     else:
         form = CustomUserCreationForm()
-            
+
     return render(request, 'users/register.html',{'form':form})
 
 def logoutUser(request):
