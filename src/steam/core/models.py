@@ -26,3 +26,24 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super(Project, self).save(*args, **kwargs)
+    
+class Task(models.Model):
+    CHOICES = (
+        ('1', 'À commencer'),
+        ('2', 'En cours'),
+        ('3', 'Terminé'),
+    )
+
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    start_date  = models.DateField('Date de début')
+    end_date = models.DateField('Date de fin')
+    status = models.CharField(max_length=1, choices=CHOICES, default='À commencer')
+
+    def __str__(self):
+        return self.name
+    
+    def clean(self):
+        super().clean()
+        if not (self.start_date <= self.end_date):
+            raise ValidationError('La date de début doit être antérieure à la date de fin.')
