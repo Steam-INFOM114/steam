@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Project
+from django.utils.text import slugify
+
 
 # TODO: use form in template
 class ProjectForm(forms.ModelForm):
@@ -39,6 +41,9 @@ class CustomUserCreationForm(UserCreationForm):
     last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
     email = forms.EmailField(max_length=254, required=True, help_text='Required. Enter a valid email address.')
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        return slugify(username)
 
     class Meta:
         model = User
