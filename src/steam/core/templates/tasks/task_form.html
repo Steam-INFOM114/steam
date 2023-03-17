@@ -12,7 +12,6 @@
                     <form method="POST" action="">
                         {% csrf_token %}
                         {% for field in form %}
-                            {% if field.name != "status" or task.pk %}
                                 <div class="row align-items-center py-3">
                                     <div class="col-md-3 ps-5">
                                         <h6 class="mb-0">{{ field.label_tag }}</h6>
@@ -22,7 +21,6 @@
                                     </div>
                                 </div>
                             <hr class="mx-n3">
-                            {% endif %}
                         {% endfor %}
                         <div class="px-5 py-4">
                             <button type="submit" class="btn btn-primary btn-lg">Submit</button>
