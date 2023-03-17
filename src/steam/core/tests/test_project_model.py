@@ -74,3 +74,14 @@ class ProjectModelTest(TestCase):
             members=[self.users[0], self.users[1]])
         with self.assertRaises(ValidationError):
             project.full_clean()
+
+    def test_two_same_members_and_raises_validation_error(self):
+        project = Project(
+            name='My project',
+            description='My description',
+            start_date='2018-01-01',
+            end_date='2019-01-01',
+            owner=self.users[0],
+            members=[self.users[1], self.users[1]])
+        with self.assertRaises(ValidationError):
+            project.full_clean()
