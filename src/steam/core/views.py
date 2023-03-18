@@ -44,27 +44,26 @@ class ProjectDeleteView(DeleteView):
 
 
 def loginPage(request):
-
     if request.user.is_authenticated:
         return redirect('project-list')
-
     if request.method == "POST": #get username and password
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
-
-        try: #check if the user exists
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request, "User does not exist")
-
-        user = authenticate(request, username=username, password=password) #make sure that the credentials are corrects and store user object based on username and password
-
-        if user is not None and user.is_active:
-            login(request,user) #log the user in create a session
-            return redirect('project-list')
+        # Check if the user exists
+        try:
+            user_exists = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user_exists = None
+        if user_exists:
+            # Make sure that the credentials are corrects and store user object based on username and password
+            user = authenticate(request, username=username, password=password)
+            if user is not None and user.is_active:
+                login(request, user)
+                return redirect('project-list')
+            else:
+                messages.error(request, 'Invalid username or password.')
         else:
-            messages.error(request, 'Username OR Password does not exists')
-
+            messages.error(request, 'User does not exist.')
     return render(request, 'users/login.html')
 
 
