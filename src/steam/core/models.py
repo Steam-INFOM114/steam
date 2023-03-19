@@ -20,7 +20,7 @@ class Project(models.Model):
 
     # TODO: localization of validation errors
     def clean(self):
-        if self.start_date > self.end_date:
+        if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError('La date de début doit être antérieure à la date de fin.')
 
     # clean() is not automatically called when an object is saved, hence the overriding of save()
