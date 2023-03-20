@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 
 class TaskUpdateViewTest(TestCase):
     def setUp(self):
-        self.task = Task.objects.create(name='Créer une campagne publicitaire', description='Contacter des agences de publicité', start_date=timezone.now().date(),end_date=timezone.now().date() + timezone.timedelta(days=2), status='1')
         self.url = reverse('taskUpdate', args=[self.task.id])
         self.user = User.objects.create_user(
             username='testuser',
@@ -22,6 +21,7 @@ class TaskUpdateViewTest(TestCase):
             is_archived=False,
             owner=self.user
         )
+        self.task = Task.objects.create(name='Créer une campagne publicitaire', description='Contacter des agences de publicité', start_date=timezone.now().date(),end_date=timezone.now().date() + timezone.timedelta(days=2), status='1', project=self.project)
         self.valid_data = {
             'name': 'Créer une campagne publicitaire',
             'description': 'Contacter des agences de publicité',
