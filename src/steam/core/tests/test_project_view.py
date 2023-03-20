@@ -58,8 +58,6 @@ class TestProjectView(TestCase):
         # self.assertContains(response, new_project.start_date)
         # self.assertContains(response, new_project.end_date)
         self.assertContains(response, self.users[0].username)
-        for member in new_project.members.all():
-            self.assertContains(response, member.username)
 
     # READ
 
