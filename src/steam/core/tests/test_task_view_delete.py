@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..models import Project, Task
+from core.models import Project, Task
 from django.urls import reverse
 from django.utils import timezone
 
@@ -23,11 +23,11 @@ class TaskDeleteViewTest(TestCase):
         self.task = Task.objects.create(name='Task 1', description='Description for Task 1',
                                         start_date=timezone.now().date(), end_date=timezone.now().date(),
                                         status='1', project=self.project)
-        self.url = reverse('taskDelete', args=[self.task.id])
+        self.url = reverse('task-delete', args=[self.task.id])
 
     def test_delete_task_view_success(self):
         """Test that the delete task view deletes a task."""
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('tasks'))
+        self.assertRedirects(response, reverse('task-list'))
         self.assertFalse(Task.objects.filter(id=self.task.id).exists())

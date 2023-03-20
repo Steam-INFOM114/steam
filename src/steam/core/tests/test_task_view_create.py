@@ -1,12 +1,14 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..models import Project, Task
+from core.models import Project, Task
+from core.forms import TaskForm
+from django.urls import reverse
 from django.utils import timezone
 
 
 class TaskCreateViewTest(TestCase):
     def setUp(self):
-        self.url = reverse('taskCreate')
+        self.url = reverse('task-create')
         self.user = User.objects.create_user(
             username='testuser',
             email='testuser@example.com',
@@ -43,7 +45,7 @@ class TaskCreateViewTest(TestCase):
         """Test that the create task view creates a new task with valid data."""
         response = self.client.post(self.url, data=self.valid_data)
         # Expect a redirect after successful form submission
-        self.assertRedirects(response, reverse('tasks'))
+        self.assertRedirects(response, reverse('task-list'))
         # Expect one task object to be created
         self.assertEqual(Task.objects.count(), 1)
         task = Task.objects.first()

@@ -1,13 +1,13 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..models import Project
+from core.models import Project
 from django.urls import reverse
 from django.utils import timezone
 
 
 class TaskCreateTemplateTest(TestCase):
     def setUp(self):
-        self.url = reverse('taskCreate')
+        self.url = reverse('task-create')
         self.response = self.client.get(self.url)
         self.user = User.objects.create_user(
             username='testuser',

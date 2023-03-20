@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..models import Project
-from ..forms import TaskForm
+from core.models import Project
+from core.forms import TaskForm
 from django.utils import timezone
 
 class TaskFormTest(TestCase):

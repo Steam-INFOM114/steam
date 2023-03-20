@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..models import Project, Task
+from core.models import Project, Task
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
