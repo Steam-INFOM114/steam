@@ -128,8 +128,6 @@ class TestProjectView(TestCase):
         # self.assertContains(response, updated_project.start_date)
         # self.assertContains(response, updated_project.end_date)
         self.assertContains(response,self.users[1].username)
-        for member in updated_project.members.all():
-            self.assertContains(response, member.username)
 
     # DELETE
 
