@@ -23,6 +23,8 @@ class TestProjectView(TestCase):
             project.save()
             project.members.set([self.users[1], self.users[2]])
 
+        # Login as the first user
+        self.client.login(username=self.users[0].username, password='password')
     # CREATE
 
     def test_project_create_view(self):
