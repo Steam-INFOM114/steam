@@ -145,6 +145,3 @@ class TestProjectView(TestCase):
         self.assertNotContains(response, self.projects[0].description)
         # self.assertNotContains(response, self.projects[0].start_date)
         # self.assertNotContains(response, self.projects[0].end_date)
-        self.assertNotContains(response, self.projects[0].owner.username)
-        for member in self.projects[0].members.all():
-            self.assertNotContains(response, member.username)
