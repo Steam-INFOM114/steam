@@ -3,6 +3,7 @@
 {% block title %}{% if project.pk %}Modifier{% else %}Créer{% endif %} un projet{% endblock %}
 
 {% block content %}
+{% with list_id="members_group_list" %}
 {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}
@@ -35,7 +36,28 @@
                   <h6 class="mb-0">{{ field.label_tag }}</h6>
                 </div>
                 <div class="col-md-9 pe-5">
-                  {{ field }}
+                  {% if field.name == 'members' %}
+                    <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
+                    <div class="overflow-auto" style="max-height: 120px;">
+                      <ul class="list-group" id="{{ list_id }}">
+                        {% for user in users %}
+                          <li class="list-group-item">
+                            <input
+                              class="form-check-input me-1"
+                              type="checkbox"
+                              name="members"
+                              value="{{ user.id }}"
+                              id="MemberCheckbox{{ user.id }}"
+                              {% if user in project.members.all %}checked{% endif %}
+                            >
+                            <label class="form-check-label stretched-link" for="MemberCheckbox{{ user.id }}">{{ user }}</label>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% else %}
+                    {{ field }}
+                  {% endif %}
                 </div>
               </div>
             <hr class="mx-n3">
@@ -49,4 +71,6 @@
     </div>
   </div>
 </div>
+{% include "project/list_search.html" with list_id=list_id %}
+{% endwith %}
 {% endblock %}

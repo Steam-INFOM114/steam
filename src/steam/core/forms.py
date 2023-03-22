@@ -22,7 +22,5 @@ class ProjectForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'placeholder': 'Description du projet', 'class': 'form-control', 'rows': 3}),
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'is_archived': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            # TODO: add widget with search option
-            'members': forms.SelectMultiple(attrs={'class': 'form-select'})
+            'is_archived': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
