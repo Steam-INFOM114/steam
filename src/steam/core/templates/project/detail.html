@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Project details{% endblock %}
+
+{% block content %}
+{% with list_id="members_group_list" %}
+<div class="container mt-4 mb-4">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-xl-9">
+      <div class="card">
+        <div class="card-header">
+          <h2>Project details</h2>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">Name</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <input class="form-control" type="text" value="{{ project.name }}" rows="3" disabled readonly>
+            </div>
+          </div>
+          <hr class="mx-n3">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">Description</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <textarea class="form-control" rows="3" disabled readonly>{{ project.description }}</textarea>
+            </div>
+          </div>
+          <hr class="mx-n3">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">Start date</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <input type="date" class="form-control" value="{{ project.start_date|date:'Y-m-d' }}" disabled readonly/>
+            </div>
+          </div>
+          <hr class="mx-n3">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">End date</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <input type="date" class="form-control" value="{{ project.end_date|date:'Y-m-d' }}" disabled readonly/>
+            </div>
+          </div>
+          <hr class="mx-n3">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">Archived</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <input class="form-check-input" type="checkbox" value="" {% if project.is_archived %}checked{% endif %} disabled readonly>
+            </div>
+          </div>
+          <hr class="mx-n3">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">Owner</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <select class="form-select" disabled readonly>
+                <option selected>{{ project.owner.username }}</option>
+              </select>
+            </div>
+          </div>
+          <hr class="mx-n3">
+          <div class="row align-items-center py-3">
+            <div class="col-md-3 ps-5">
+              <h6 class="mb-0">Members</h6>
+            </div>
+            <div class="col-md-9 pe-5">
+              <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
+              <div class="overflow-auto" style="max-height: 120px;">
+                <ul class="list-group" id="{{ list_id }}">
+                  {% for member in project.members.all %}
+                    <li class="list-group-item" style="background-color: #e9ecef;">{{ member.username }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% include "project/list_search.html" with list_id=list_id %}
+{% endwith %}
+{% endblock %}

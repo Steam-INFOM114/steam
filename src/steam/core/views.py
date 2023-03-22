@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Project
 from .forms import ProjectForm
@@ -8,6 +8,12 @@ class ProjectListView(ListView):
     model = Project
     template_name = 'project/list.html'
     context_object_name = 'projects'
+
+
+class ProjectDetailView(DetailView):
+    model = Project
+    template_name = 'project/detail.html'
+    context_object_name = 'project'
 
 
 class ProjectCreateView(CreateView):
