@@ -9,6 +9,7 @@ class TestProjectView(TestCase):
         # Create some users
         self.users = [User(username='user{}'.format(i)) for i in range(3)]
         for user in self.users:
+            user.set_password('password')
             user.save()
 
         # Create some projects
