@@ -5,7 +5,8 @@ from .models import Project
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = '__all__'
+        exclude = ['owner']
+
         # TODO: localization of labels
         labels = {
             'name': 'Nom',
@@ -13,7 +14,6 @@ class ProjectForm(forms.ModelForm):
             'start_date': 'Date de début',
             'end_date': 'Date de fin',
             'is_archived': 'Archivé',
-            'owner': 'Propriétaire',
             'members': 'Membres'
         }
         widgets = {
@@ -23,7 +23,6 @@ class ProjectForm(forms.ModelForm):
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'is_archived': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'owner': forms.Select(attrs={'class': 'form-select'}),
             # TODO: add widget with search option
             'members': forms.SelectMultiple(attrs={'class': 'form-select'})
         }
