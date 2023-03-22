@@ -17,5 +17,11 @@
     {% endfor %}
 </table>
 <a href="{% url 'taskCreate' %}">Create</a>
+<a href="{% url 'taskUpdate' selected %}">Update</a>
+<a href="{% url 'taskDelete' selected %}">Delete</a>
+
+{% load plotly_dash %}
+
+{% plotly_app name='SimpleExample' ratio=0.8 %}
 
 {% endblock %}
