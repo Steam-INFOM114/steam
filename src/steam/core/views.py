@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from .forms import ProjectForm,TaskForm
 from .models import Task
 
-
 class ProjectListView(ListView):
     model = Project
     template_name = 'project/list.html'
@@ -39,12 +38,6 @@ class ProjectUpdateView(UpdateView):
 class ProjectDeleteView(DeleteView):
     model = Project
     success_url = reverse_lazy('project-list')
-
-#views for tasks
-class TaskList(ListView):
-    model = Task
-    context_object_name = 'tasks'
-    template_name = "tasks/tasks.html"
 
 class TaskDetail(DetailView):
     model = Task
