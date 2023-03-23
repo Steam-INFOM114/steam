@@ -40,10 +40,12 @@ class TaskForm(forms.ModelForm):
             'description': 'Description',
             'start_date': 'Date de début',
             'end_date': 'Date de fin',
+            'project': 'Projet'
         }
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Nom du projet', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': 'Description du projet', 'class': 'form-control', 'rows': 3}),
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'project': forms.Select(attrs={'class': 'form-select'})
         }
