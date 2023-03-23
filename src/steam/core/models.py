@@ -101,7 +101,8 @@ class MyUser(AbstractUser):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super(Project, self).save(*args, **kwargs)
-    
+
+
 class Task(models.Model):
     CHOICES = (
         ('1', 'À commencer'),
@@ -114,10 +115,12 @@ class Task(models.Model):
     start_date  = models.DateField('Date de début')
     end_date = models.DateField('Date de fin')
     status = models.CharField(max_length=1, choices=CHOICES, default='À commencer')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+
 
     def __str__(self):
         return self.name
-    
+
     def clean(self):
         super().clean()
         if not (self.start_date <= self.end_date):
