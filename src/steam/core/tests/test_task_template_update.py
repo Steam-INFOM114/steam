@@ -1,15 +1,11 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from core.models import Project,Task
-from core.forms import TaskForm
 from django.utils import timezone
 from django.contrib.auth.models import User
 
 class TaskUpdateTemplateTest(TestCase):
     def setUp(self):
-        self.task = Task.objects.create(name='Créer une campagne publicitaire', description='Contacter des agences de publicité', start_date=timezone.now().date(),end_date=timezone.now().date() + timezone.timedelta(days=2), status='1')
-        self.url = reverse('taskUpdate', args=[self.task.id])
-        self.response = self.client.get(self.url)
         self.user = User.objects.create_user(
             username='testuser',
             email='testuser@example.com',
@@ -23,6 +19,13 @@ class TaskUpdateTemplateTest(TestCase):
             is_archived=False,
             owner=self.user
         )
+        self.task = Task.objects.create(
+            name='Créer une campagne publicitaire',
+            description='Contacter des agences de publicité',
+            start_date=timezone.now().date(),
+            end_date=timezone.now().date() + timezone.timedelta(days=2),
+            status='1',
+            project=self.project)
         self.valid_data = {
             'name': 'Créer une campagne publicitaire',
             'description': 'Contacter des agences de publicité',
@@ -31,6 +34,8 @@ class TaskUpdateTemplateTest(TestCase):
             'status': '2',
             'project': self.project.pk
         }
+        self.url = reverse('task-update', args=[self.task.id])
+        self.response = self.client.get(self.url)
 
     def test_update_task_template_form(self):
         """Test that the update_task.html template contains a form."""
