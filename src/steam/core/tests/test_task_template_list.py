@@ -1,13 +1,12 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from core.models import Project,Task
-from core.forms import TaskForm
 from django.utils import timezone
 from django.contrib.auth.models import User
 
 class TasksListTemplateTest(TestCase):
     def setUp(self):
-        self.url = reverse('tasks')
+        self.url = reverse('task-list')
         self.user = User.objects.create_user(
             username='testuser',
             email='testuser@example.com',

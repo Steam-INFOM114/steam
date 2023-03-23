@@ -1,13 +1,12 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from core.models import Project,Task
-from core.forms import TaskForm
 from django.utils import timezone
 from django.contrib.auth.models import User
+import copy
 
 class TaskUpdateViewTest(TestCase):
     def setUp(self):
-        self.url = reverse('taskUpdate', args=[self.task.id])
         self.user = User.objects.create_user(
             username='testuser',
             email='testuser@example.com',
@@ -30,12 +29,13 @@ class TaskUpdateViewTest(TestCase):
             'status': '2',
             'project': self.project.pk
         }
+        self.url = reverse('task-update', args=[self.task.id])
 
     def test_task_update_view_get(self):
         """Test that the update task view renders the correct template and form for GET requests."""
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'task/task_form.html')
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
 
     def test_task_update_view_updates_task(self):
         """Test that the update task is updated in db"""
@@ -47,7 +47,7 @@ class TaskUpdateViewTest(TestCase):
     def test_update_task_with_valid_data(self):
         """Test that submitting a valid form redirects to the list of tasks"""
         response = self.client.post(self.url, data=self.valid_data)
-        self.assertRedirects(response, reverse('tasks'))
+        self.assertRedirects(response, reverse('task-list'))
 
     def test_update_task_view_end_date_before_start_date(self):
         """Test that the update task view doesn't create a new task with an end_date before start_date"""
@@ -78,6 +78,12 @@ class TaskUpdateViewTest(TestCase):
             self.assertEqual(updated_task.status, self.task.status)
 
     def test_update_task_with_empty_data(self):
+        # Using copy module
+        task = copy.copy(self.task)
         response = self.client.post(self.url, data={})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Task.objects.count(), 0)
+        self.assertEqual(task.name, self.task.name)
+        self.assertEqual(task.description, self.task.description)
+        self.assertEqual(task.start_date, self.task.start_date)
+        self.assertEqual(task.end_date, self.task.end_date)
+        self.assertEqual(task.status, self.task.status)
