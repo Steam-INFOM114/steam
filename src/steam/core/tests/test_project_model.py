@@ -77,7 +77,7 @@ class TestProjectModel(TestCase):
         with self.assertRaises(ValidationError):
             project.full_clean()
 
-    def test_two_same_members_and_raises_validation_error(self):
+    def test_two_same_members_and_only_one_is_added(self):
         project = Project(
             name='My project',
             description='My description',
@@ -86,5 +86,4 @@ class TestProjectModel(TestCase):
             owner=self.users[0])
         project.save()
         project.members.set([self.users[1], self.users[1]])
-        with self.assertRaises(ValidationError):
-            project.full_clean()
+        self.assertEqual(project.members.count(), 1)
