@@ -25,6 +25,7 @@ class TestProjectView(TestCase):
 
         # Login as the first user
         self.client.login(username=self.users[0].username, password='password')
+
     # CREATE
 
     def test_project_create_view(self):
@@ -62,6 +63,19 @@ class TestProjectView(TestCase):
         # self.assertContains(response, new_project.end_date)
         self.assertContains(response, self.users[0].username)
 
+    def test_project_create_view_post_invalid(self):
+        response = self.client.post(reverse('project-create'), {
+            'name': 'New project',
+            'description': 'This is a new project.',
+            'start_date': '2019-01-01',
+            'end_date': '2018-01-01',
+            'owner': self.users[0].pk,
+            'members': [self.users[1].pk, self.users[2].pk]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'project/create_update.html')
+        self.assertEqual(Project.objects.count(), len(self.projects))
+
     # READ
 
     def test_project_list_view(self):
@@ -89,6 +103,10 @@ class TestProjectView(TestCase):
         self.assertContains(response, project.owner.username)
         for member in project.members.all():
             self.assertContains(response, member.username)
+
+    def test_project_detail_view_does_not_exist(self):
+        response = self.client.get(reverse('project-detail', kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)
 
     # UPDATE
 
@@ -129,6 +147,49 @@ class TestProjectView(TestCase):
         # self.assertContains(response, updated_project.end_date)
         self.assertContains(response,self.users[1].username)
 
+    def test_project_update_view_post_invalid(self):
+        response = self.client.post(reverse('project-update', kwargs={'pk': self.projects[0].pk}), {
+            'name': 'Updated project',
+            'description': 'This is an updated project.',
+            'start_date': '2020-01-01', # invalid date start > end
+            'end_date': '2019-01-01',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'project/create_update.html')
+        self.assertEqual(Project.objects.count(), len(self.projects))
+
+        updated_project = Project.objects.get(pk=self.projects[0].pk)
+        self.assertEqual(updated_project.name, self.projects[0].name)
+        self.assertEqual(updated_project.description, self.projects[0].description)
+        self.assertEqual(updated_project.start_date, self.projects[0].start_date)
+        self.assertEqual(updated_project.end_date, self.projects[0].end_date)
+        self.assertEqual(updated_project.owner, self.projects[0].owner)
+        self.assertQuerysetEqual(updated_project.members.all(), map(repr, self.projects[0].members.all()), ordered=False)
+
+    def test_project_update_view_change_owner_is_invalid(self):
+        response = self.client.post(reverse('project-update', kwargs={'pk': self.projects[0].pk}), {
+            'name': 'Updated project',
+            'description': 'This is an updated project.',
+            'start_date': '2020-01-01',
+            'end_date': '2021-01-01',
+            'owner': self.users[1].pk,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'project/create_update.html')
+        self.assertEqual(Project.objects.count(), len(self.projects))
+
+        updated_project = Project.objects.get(pk=self.projects[0].pk)
+        self.assertEqual(updated_project.name, self.projects[0].name)
+        self.assertEqual(updated_project.description, self.projects[0].description)
+        self.assertEqual(updated_project.start_date, self.projects[0].start_date)
+        self.assertEqual(updated_project.end_date, self.projects[0].end_date)
+        self.assertEqual(updated_project.owner, self.projects[0].owner)
+        self.assertQuerysetEqual(updated_project.members.all(), map(repr, self.projects[0].members.all()), ordered=False)
+
+    def test_project_update_view_project_does_not_exist(self):
+        response = self.client.get(reverse('project-update', kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)
+
     # DELETE
 
     def test_project_delete_view_post(self):
@@ -144,3 +205,7 @@ class TestProjectView(TestCase):
         self.assertNotContains(response, self.projects[0].description)
         # self.assertNotContains(response, self.projects[0].start_date)
         # self.assertNotContains(response, self.projects[0].end_date)
+
+    def test_project_delete_view_project_does_not_exist(self):
+        response = self.client.get(reverse('project-delete', kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)
