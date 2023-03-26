@@ -104,7 +104,6 @@ class TestProjectView(TestCase):
             'description': 'This is an updated project.',
             'start_date': '2020-01-01',
             'end_date': '2021-01-01',
-            'owner': self.users[1].pk,
         })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.count(), len(self.projects))
@@ -117,7 +116,7 @@ class TestProjectView(TestCase):
         self.assertEqual(updated_project.description, 'This is an updated project.')
         self.assertEqual(updated_project.start_date, date(2020, 1, 1))
         self.assertEqual(updated_project.end_date, date(2021, 1, 1))
-        self.assertEqual(updated_project.owner, self.users[1])
+        self.assertEqual(updated_project.owner, self.users[0])
         self.assertQuerysetEqual(updated_project.members.all(), map(repr, [self.users[2], self.users[0]]), ordered=False)
 
         # Get the page after the post and check if the page contains the updated project
