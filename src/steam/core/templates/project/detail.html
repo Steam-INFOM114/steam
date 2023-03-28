@@ -73,14 +73,20 @@
               <h6 class="mb-0">Members</h6>
             </div>
             <div class="col-md-9 pe-5">
-              <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
-              <div class="overflow-auto" style="max-height: 120px;">
-                <ul class="list-group" id="{{ list_id }}">
-                  {% for member in project.members.all %}
-                    <li class="list-group-item" style="background-color: #e9ecef;">{{ member.username }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
+              {% if project.members.all %}
+                <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
+                <div class="overflow-auto" style="max-height: 120px;">
+                  <ul class="list-group" id="{{ list_id }}">
+                    {% for member in project.members.all %}
+                      <li class="list-group-item" style="background-color: #e9ecef;">{{ member.username }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% else %}
+                <div class="text-muted">
+                  No members found
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>

@@ -37,24 +37,30 @@
                 </div>
                 <div class="col-md-9 pe-5">
                   {% if field.name == 'members' %}
-                    <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
-                    <div class="overflow-auto" style="max-height: 120px;">
-                      <ul class="list-group" id="{{ list_id }}">
-                        {% for user in users %}
-                          <li class="list-group-item">
-                            <input
-                              class="form-check-input me-1"
-                              type="checkbox"
-                              name="members"
-                              value="{{ user.id }}"
-                              id="MemberCheckbox{{ user.id }}"
-                              {% if user in project.members.all %}checked{% endif %}
-                            >
-                            <label class="form-check-label stretched-link" for="MemberCheckbox{{ user.id }}">{{ user }}</label>
-                          </li>
-                        {% endfor %}
-                      </ul>
-                    </div>
+                    {% if users %}
+                      <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
+                      <div class="overflow-auto" style="max-height: 120px;">
+                        <ul class="list-group" id="{{ list_id }}">
+                          {% for user in users %}
+                            <li class="list-group-item">
+                              <input
+                                class="form-check-input me-1"
+                                type="checkbox"
+                                name="members"
+                                value="{{ user.id }}"
+                                id="MemberCheckbox{{ user.id }}"
+                                {% if user in project.members.all %}checked{% endif %}
+                              >
+                              <label class="form-check-label stretched-link" for="MemberCheckbox{{ user.id }}">{{ user }}</label>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% else %}
+                      <div class="text-muted">
+                        No users found
+                      </div>
+                    {% endif %}
                   {% else %}
                     {{ field }}
                   {% endif %}
