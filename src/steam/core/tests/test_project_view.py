@@ -145,7 +145,7 @@ class TestProjectView(TestCase):
         self.assertContains(response, updated_project.description)
         # self.assertContains(response, updated_project.start_date)
         # self.assertContains(response, updated_project.end_date)
-        self.assertContains(response,self.users[1].username)
+        self.assertContains(response, self.users[0].username)
 
     def test_project_update_view_post_invalid(self):
         response = self.client.post(reverse('project-update', kwargs={'pk': self.projects[0].pk}), {
