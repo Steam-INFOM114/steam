@@ -41,7 +41,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCreateView, self).get_context_data(**kwargs)
-        context['users'] = User.objects.all()
+        context['users'] = User.objects.exclude(pk=self.request.user.pk)
         return context
 
 
@@ -53,7 +53,7 @@ class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateView, self).get_context_data(**kwargs)
-        context['users'] = User.objects.all()
+        context['users'] = User.objects.exclude(pk=self.request.user.pk)
         return context
 
     def test_func(self):
