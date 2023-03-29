@@ -26,6 +26,9 @@ class Project(models.Model):
             raise ValidationError(
                 'La date de début doit être antérieure à la date de fin.')
 
+        if self.id and self.owner in self.members.all():
+            raise ValidationError('Owner cannot also be a project member')
+
     # clean() is not automatically called when an object is saved, hence the overriding of save()
     def save(self, *args, **kwargs):
         self.full_clean()
