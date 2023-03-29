@@ -7,7 +7,7 @@ from core.models import Project
 class TestProjectView(TestCase):
     def setUp(self):
         # Create some users
-        self.users = [User(username='user{}'.format(i)) for i in range(3)]
+        self.users = [User(username='user{}'.format(i)) for i in range(4)]
         for user in self.users:
             user.set_password('password')
             user.save()
@@ -128,14 +128,14 @@ class TestProjectView(TestCase):
 
         updated_project = Project.objects.get(pk=self.projects[0].pk)
 
-        updated_project.members.set([self.users[2], self.users[0]])
+        updated_project.members.set([self.users[2], self.users[3]])
 
         self.assertEqual(updated_project.name, 'Updated project')
         self.assertEqual(updated_project.description, 'This is an updated project.')
         self.assertEqual(updated_project.start_date, date(2020, 1, 1))
         self.assertEqual(updated_project.end_date, date(2021, 1, 1))
         self.assertEqual(updated_project.owner, self.users[0])
-        self.assertQuerysetEqual(updated_project.members.all(), map(repr, [self.users[2], self.users[0]]), ordered=False)
+        self.assertQuerysetEqual(updated_project.members.all(), map(repr, [self.users[2], self.users[3]]), ordered=False)
 
         # Get the page after the post and check if the page contains the updated project
         expected_url = reverse('project-list')
@@ -172,21 +172,19 @@ class TestProjectView(TestCase):
             'description': 'This is an updated project.',
             'start_date': '2020-01-01',
             'end_date': '2021-01-01',
-            'owner': self.users[1].pk,
+            'owner': self.users[3].pk,
         })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.count(), len(self.projects))
 
         updated_project = Project.objects.get(pk=self.projects[0].pk)
 
-        updated_project.members.set([self.users[2], self.users[0]])
-
         self.assertEqual(updated_project.name, 'Updated project')
         self.assertEqual(updated_project.description, 'This is an updated project.')
         self.assertEqual(updated_project.start_date, date(2020, 1, 1))
         self.assertEqual(updated_project.end_date, date(2021, 1, 1))
         self.assertEqual(updated_project.owner, self.users[0])
-        self.assertQuerysetEqual(updated_project.members.all(), map(repr, [self.users[2], self.users[0]]), ordered=False)
+        self.assertQuerysetEqual(updated_project.members.all(), map(repr, self.projects[0].members.all()), ordered=False)
 
         # Get the page after the post and check if the page contains the updated project
         expected_url = reverse('project-list')
