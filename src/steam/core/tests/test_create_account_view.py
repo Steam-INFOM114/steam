@@ -136,6 +136,42 @@ class TestCreateAccountView(TestCase):
         self.assertTemplateUsed(response, 'users/register.html')
         self.assertEquals(User.objects.count(), 0)
 
+    def test_register_view_first_name_empty_invalid(self):
+        response = self.client.post(reverse('register'), {'username': self.user.username, 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': '', 'last_name': self.user.last_name})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/register.html')
+        self.assertEquals(User.objects.count(), 0)
+
+    def test_register_view_first_name_too_long_invalid(self):
+        response = self.client.post(reverse('register'), {'username': self.user.username, 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': 'a'*31, 'last_name': self.user.last_name})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/register.html')
+        self.assertEquals(User.objects.count(), 0)
+
+    def test_register_view_first_name_spaces_only_invalid(self):
+        response = self.client.post(reverse('register'), {'username': self.user.username, 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': '     ', 'last_name': self.user.last_name})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/register.html')
+        self.assertEquals(User.objects.count(), 0)
+
+    def test_register_view_last_name_empty_invalid(self):
+        response = self.client.post(reverse('register'), {'username': self.user.username, 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': self.user.first_name, 'last_name': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/register.html')
+        self.assertEquals(User.objects.count(), 0)
+
+    def test_register_view_last_name_too_long_invalid(self):
+        response = self.client.post(reverse('register'), {'username': self.user.username, 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': self.user.first_name, 'last_name': 'a' * 31})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/register.html')
+        self.assertEquals(User.objects.count(), 0)
+
+    def test_register_view_last_name_spaces_only_invalid(self):
+        response = self.client.post(reverse('register'), {'username': self.user.username, 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': self.user.first_name, 'last_name': '     '})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/register.html')
+        self.assertEquals(User.objects.count(), 0)
+
     # LOGIN
 
     def test_login_view(self):
