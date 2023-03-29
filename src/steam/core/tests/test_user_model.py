@@ -25,7 +25,7 @@ class TestUserModel(TestCase):
             User.objects.create_user(self.user)
 
     def test_user_username_too_long_raises_validation_error(self):
-        self.user.username = 'a' * 31
+        self.user.username = 'a' * 151
         with self.assertRaises(ValidationError):
             User.objects.create_user(self.user)
 
