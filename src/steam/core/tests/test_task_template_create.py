@@ -89,3 +89,121 @@ class TaskCreateTemplateTest(TestCase):
         response = self.client.post(self.url, data=invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required.', count=5)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_name_spaces_only_error(self):
+        """Test that the create task template shows error message for name with spaces only."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['name'] = '    '
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_name_too_long_error(self):
+        """Test that the create task template shows error message for name too long."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['name'] = 'a' * 101
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_start_date_but_no_end_date_error(self):
+        """Test that the create task template shows error message when a start date is set but no end date."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['end_date'] = ''
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_end_date_but_no_start_date_error(self):
+        """Test that the create task template shows error message when an end date is set but no start date."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['start_date'] = ''
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_end_date_after_project_end_date_error(self):
+        """Test that the create task template shows error message when the end date is after the project end date."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['end_date'] = self.project.end_date + timezone.timedelta(days=1)
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_end_date_before_project_start_date_error(self):
+        """Test that the create task template shows error message when the end date is before the project start date."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['start_date'] = self.project.start_date - timezone.timedelta(days=2)
+        invalid_data['end_date'] = self.project.start_date - timezone.timedelta(days=1)
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_start_date_after_project_end_date_error(self):
+        """Test that the create task template shows error message when the start date is after the project end date."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['start_date'] = self.project.end_date + timezone.timedelta(days=1)
+        invalid_data['end_date'] = invalid_data['start_date'] + timezone.timedelta(days=1)
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_start_date_before_project_start_date_error(self):
+        """Test that the create task template shows error message when the start date is before the project start date."""
+        invalid_data = self.valid_data.copy()
+        invalid_data['start_date'] = self.project.start_date - timezone.timedelta(days=1)
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tasks/task_form.html')
+        self.assertEqual(Task.objects.count(), 0)
+
+    def test_create_task_start_date_equals_end_date_is_valid(self):
+        """Test that the create task template allows a start date that is the same as the end date."""
+        self.valid_data['start_date'] = self.valid_data['end_date']
+        response = self.client.post(self.url, self.valid_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Task.objects.count(), 1)
+
+        # Get the page after the post and check if the page contains the new task
+        expected_url = reverse('tasks')
+        self.assertRedirects(response, expected_url)
+        response = self.client.get(expected_url)
+        self.assertTemplateUsed(response, 'tasks/tasks.html')
+        self.assertContains(response, self.valid_data['name'])
+
+    def test_create_task_start_date_equals_project_start_date_is_valid(self):
+        """Test that the create task template allows a start date that is the same as the project start date."""
+        self.valid_data['start_date'] = self.project.start_date
+        response = self.client.post(self.url, self.valid_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Task.objects.count(), 1)
+
+        # Get the page after the post and check if the page contains the new task
+        expected_url = reverse('tasks')
+        self.assertRedirects(response, expected_url)
+        response = self.client.get(expected_url)
+        self.assertTemplateUsed(response, 'tasks/tasks.html')
+        self.assertContains(response, self.valid_data['name'])
+
+    def test_create_task_end_date_equals_project_end_date(self):
+        """Test that the create task template allows an end date that is the same as the project end date."""
+        self.valid_data['end_date'] = self.project.end_date
+        response = self.client.post(self.url, self.valid_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Task.objects.count(), 1)
+
+        # Get the page after the post and check if the page contains the new task
+        expected_url = reverse('tasks')
+        self.assertRedirects(response, expected_url)
+        response = self.client.get(expected_url)
+        self.assertTemplateUsed(response, 'tasks/tasks.html')
+        self.assertContains(response, self.valid_data['name'])
