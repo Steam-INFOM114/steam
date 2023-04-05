@@ -10,6 +10,7 @@ class TaskModelTest(TestCase):
         """
         Setup method that creates a sample Task instance
         """
+        self.now = timezone.now().date()
         self.user = User.objects.create_user(
             username='testuser',
             email='testuser@example.com',
@@ -18,16 +19,16 @@ class TaskModelTest(TestCase):
         self.project = Project.objects.create(
             name="testproject",
             description="this is a test project",
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=5),
             is_archived=False,
             owner=self.user
         )
         self.task = Task.objects.create(
             name='Test Task',
             description='This is a test task',
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
@@ -38,8 +39,8 @@ class TaskModelTest(TestCase):
         """
         task = Task.objects.create(
             name='Test Task 2',
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
@@ -52,8 +53,8 @@ class TaskModelTest(TestCase):
         task = Task.objects.get(name='Test Task')
         self.assertEqual(task.name, 'Test Task')
         self.assertEqual(task.description, 'This is a test task')
-        self.assertEqual(task.start_date, timezone.now().date())
-        self.assertEqual(task.end_date, timezone.now().date() +
+        self.assertEqual(task.start_date, self.now)
+        self.assertEqual(task.end_date, self.now +
                          timezone.timedelta(days=1))
         self.assertEqual(task.status, '1')
         self.assertEqual(task.project.pk, self.project.pk)
@@ -71,8 +72,8 @@ class TaskModelTest(TestCase):
         """
         task = Task.objects.create(
             name='Test Task 2',
-            start_date=timezone.now().date() + timezone.timedelta(days=1),
-            end_date=timezone.now().date(),
+            start_date=self.now + timezone.timedelta(days=1),
+            end_date=self.now,
             status='1',
             project=self.project
         )
@@ -94,8 +95,8 @@ class TaskModelTest(TestCase):
         with self.assertRaises(ValidationError):
             task = Task(
                 name='Test Task 2',
-                start_date=timezone.now().date(),
-                end_date=timezone.now().date() + timezone.timedelta(days=1),
+                start_date=self.now,
+                end_date=self.now + timezone.timedelta(days=1),
                 status='1',
             )
             with self.assertRaises(ValidationError):
@@ -106,8 +107,8 @@ class TaskModelTest(TestCase):
         Test that a Task cannot be created without a name
         """
         task = Task(
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
@@ -120,8 +121,8 @@ class TaskModelTest(TestCase):
         """
         task = Task(
             name='   ',
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
@@ -134,8 +135,8 @@ class TaskModelTest(TestCase):
         """
         task = Task(
             name='a' * 101,
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
@@ -148,7 +149,7 @@ class TaskModelTest(TestCase):
         """
         task = Task(
             name='Test Task 2',
-            start_date=timezone.now().date(),
+            start_date=self.now,
             status='1',
             project=self.project
         )
@@ -161,7 +162,7 @@ class TaskModelTest(TestCase):
         """
         task = Task(
             name='Test Task 2',
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            end_date=self.now + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
@@ -175,7 +176,21 @@ class TaskModelTest(TestCase):
         task = Task(
             name='Test Task 2',
             start_date=self.project.start_date - timezone.timedelta(days=1),
-            end_date=timezone.now().date() + timezone.timedelta(days=1),
+            end_date=self.now + timezone.timedelta(days=1),
+            status='1',
+            project=self.project
+        )
+        with self.assertRaises(ValidationError):
+            task.full_clean()
+
+    def test_task_start_date_after_project_end_date_raises_validation_error(self):
+        """
+        Test that a Task cannot be created with a start date after the project end date
+        """
+        task = Task(
+            name='Test Task 2',
+            start_date=self.project.end_date + timezone.timedelta(days=1),
+            end_date=self.project.end_date + timezone.timedelta(days=2),
             status='1',
             project=self.project
         )
@@ -188,10 +203,63 @@ class TaskModelTest(TestCase):
         """
         task = Task(
             name='Test Task 2',
-            start_date=timezone.now().date(),
+            start_date=self.now,
             end_date=self.project.end_date + timezone.timedelta(days=1),
             status='1',
             project=self.project
         )
         with self.assertRaises(ValidationError):
             task.full_clean()
+
+    def test_task_end_date_before_project_start_date_raises_validation_error(self):
+        """
+        Test that a Task cannot be created with an end date before the project start date
+        """
+        task = Task(
+            name='Test Task 2',
+            start_date=self.project.start_date - timezone.timedelta(days=2),
+            end_date=self.project.start_date - timezone.timedelta(days=1),
+            status='1',
+            project=self.project
+        )
+        with self.assertRaises(ValidationError):
+            task.full_clean()
+
+    def test_task_start_date_equals_end_date_is_valid(self):
+        """
+        Test that a Task can be created with a start date equal to the end date
+        """
+        task = Task(
+            name='Test Task 2',
+            start_date=self.now,
+            end_date=self.now,
+            status='1',
+            project=self.project
+        )
+        task.full_clean()
+
+    def test_task_start_date_equals_project_start_date_is_valid(self):
+        """
+        Test that a Task can be created with a start date equal to the project start date
+        """
+        task = Task(
+            name='Test Task 2',
+            start_date=self.project.start_date,
+            end_date=self.now + timezone.timedelta(days=1),
+            status='1',
+            project=self.project
+        )
+        task.full_clean()
+
+    def test_task_end_date_equals_project_end_date_is_valid(self):
+        """
+        Test that a Task can be created with an end date equal to the project end date
+        """
+        task = Task(
+            name='Test Task 2',
+            start_date=self.now,
+            end_date=self.project.end_date,
+            status='1',
+            project=self.project
+        )
+        task.full_clean()
