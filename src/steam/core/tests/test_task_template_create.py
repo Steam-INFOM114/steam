@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from core.models import Project
+from core.models import Project, Task
 from django.urls import reverse
 from django.utils import timezone
 
