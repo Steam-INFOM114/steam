@@ -87,3 +87,8 @@ class TaskUpdateViewTest(TestCase):
         self.assertEqual(task.start_date, self.task.start_date)
         self.assertEqual(task.end_date, self.task.end_date)
         self.assertEqual(task.status, self.task.status)
+
+    def test_update_task_not_found(self):
+        """Test that the update task view returns a 404 if the task is not found."""
+        response = self.client.get(reverse('task-update', args=[100]))
+        self.assertEqual(response.status_code, 404)

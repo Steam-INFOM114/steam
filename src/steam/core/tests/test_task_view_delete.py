@@ -31,3 +31,8 @@ class TaskDeleteViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('task-list'))
         self.assertFalse(Task.objects.filter(id=self.task.id).exists())
+
+    def test_delete_task_view_not_found(self):
+        """Test that the delete task view returns a 404 if the task does not exist."""
+        response = self.client.post(reverse('task-delete', args=[100]))
+        self.assertEqual(response.status_code, 404)
