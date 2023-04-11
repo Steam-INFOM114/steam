@@ -11,7 +11,6 @@ class ProjectListView(ListView):
     template_name = 'project/list.html'
     context_object_name = 'projects'
 
-
 class ProjectCreateView(CreateView):
     model = Project
     form_class = ProjectForm
@@ -48,15 +47,15 @@ class TaskCreate(CreateView):
     model = Task
     form_class = TaskForm
     template_name = "tasks/task_form.html"
-    success_url = reverse_lazy('tasks')
+    success_url = reverse_lazy('task-list')
 
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = "tasks/task_form.html"
-    success_url = reverse_lazy('tasks')
+    success_url = reverse_lazy('task-list')
 
 def delete(request, id):
   task = Task.objects.get(id=id)
   task.delete()
-  return HttpResponseRedirect(reverse('tasks'))
+  return HttpResponseRedirect(reverse('task-list'))

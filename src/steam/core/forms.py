@@ -42,6 +42,7 @@ class TaskForm(forms.ModelForm):
             'description': 'Description',
             'start_date': 'Date de début',
             'end_date': 'Date de fin',
+            'status': 'Statut',
             'project': 'Projet'
         }
         widgets = {
