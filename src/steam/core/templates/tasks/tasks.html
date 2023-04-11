@@ -8,17 +8,14 @@
     {% for task in tasks %}
     <tr>
         <td>{{task.name}}</td>
-        <td><a href="{% url 'task' task.id %}">Read</a></td>
-        <td><a href="{% url 'taskUpdate' task.id %}">Update</a></td>
-        <td><a href="{% url 'taskDelete' task.id %}">Delete</a></td>
+        <td><a href="{% url 'task-update' task.id %}">Update</a></td>
+        <td><a href="{% url 'task-delete' task.id %}">Delete</a></td>
     </tr>
     {% empty %}
         <h3>No tasks</h3>
     {% endfor %}
 </table>
-<a href="{% url 'taskCreate' %}">Create</a>
-<a href="{% url 'taskUpdate' selected %}">Update</a>
-<a href="{% url 'taskDelete' selected %}">Delete</a>
+<a href="{% url 'task-create' %}">Create</a>
 
 {% load plotly_dash %}
 
