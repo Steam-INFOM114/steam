@@ -123,5 +123,6 @@ class Task(models.Model):
 
     def clean(self):
         super().clean()
-        if not (self.start_date <= self.end_date):
-            raise ValidationError('La date de début doit être antérieure à la date de fin.')
+        if not (self.start_date == None or self.end_date == None):
+            if not (self.start_date <= self.end_date):
+                raise ValidationError('La date de début doit être antérieure à la date de fin.')

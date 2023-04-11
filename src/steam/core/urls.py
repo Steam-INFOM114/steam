@@ -15,9 +15,9 @@ urlpatterns = [
     path('project/<int:pk>/delete/',
          ProjectDeleteView.as_view(), name='project-delete'),
     #path('tasks/',TaskList.as_view(),name='tasks'), #TESTING
-    path('tasks/',viewGantt.gantt,name='tasks'),
+    path('tasks/',viewGantt.gantt,name='task-list'),
     path('tasks/task/<int:pk>/', TaskDetail.as_view(), name='task'),
-    path('tasks/create/',TaskCreate.as_view(),name='taskCreate'),
-    path('tasks/update/<int:pk>/', TaskUpdate.as_view(), name='taskUpdate'),
-    path('tasks/delete/<int:id>', views.delete, name='taskDelete'),
+    path('tasks/create/',TaskCreate.as_view(),name='task-create'),
+    path('tasks/update/<int:pk>/', TaskUpdate.as_view(), name='task-update'),
+    path('tasks/delete/<int:id>', views.delete, name='task-delete'),
 ]
