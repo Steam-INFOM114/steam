@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from . import viewGantt
-from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail,TaskCreate, TaskUpdate
+from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail,TaskCreate, TaskUpdate, TaskList
 
 urlpatterns = [
     path('login/', loginPage, name="login"),
@@ -14,8 +13,7 @@ urlpatterns = [
          ProjectUpdateView.as_view(), name='project-update'),
     path('project/<int:pk>/delete/',
          ProjectDeleteView.as_view(), name='project-delete'),
-    #path('tasks/',TaskList.as_view(),name='tasks'), #TESTING
-    path('tasks/',viewGantt.gantt,name='task-list'),
+    path('tasks/',TaskList.as_view(),name='task-list'),
     path('tasks/task/<int:pk>/', TaskDetail.as_view(), name='task'),
     path('tasks/create/',TaskCreate.as_view(),name='task-create'),
     path('tasks/update/<int:pk>/', TaskUpdate.as_view(), name='task-update'),
