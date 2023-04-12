@@ -39,7 +39,7 @@
                             <hr class="mx-n3">
                         {% endfor %}
                         <div class="px-5 py-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                            <button type="submit" class="btn btn-primary btn-lg">{% if task.pk %}Modifier{% else %}Créer{% endif %}</button>
                         </div>
                     </form>
                 </div>
