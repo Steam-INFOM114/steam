@@ -43,6 +43,11 @@ class TaskDetail(DetailView):
     context_object_name = 'task'
     template_name = "tasks/task.html"
 
+class TaskList(ListView):
+    model = Task
+    context_object_name = 'tasks'
+    template_name = "tasks/tasks.html"
+
 class TaskCreate(CreateView):
     model = Task
     form_class = TaskForm
