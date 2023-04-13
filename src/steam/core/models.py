@@ -123,3 +123,7 @@ class Task(models.Model):
         if not (self.start_date == None or self.end_date == None):
             if not (self.start_date <= self.end_date):
                 raise ValidationError('La date de début doit être antérieure à la date de fin.')
+            
+            if hasattr(self, 'project') and \
+            (self.start_date < self.project.start_date or self.end_date > self.project.end_date):
+                raise ValidationError("Les dates d'une tâche ne peuvent pas dépasser les dates du projet")
