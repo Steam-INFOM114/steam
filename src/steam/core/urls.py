@@ -1,6 +1,5 @@
 from django.urls import path
-from . import views
-from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail,TaskCreate, TaskUpdate, TaskList
+from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView
 
 urlpatterns = [
     path('login/', loginPage, name="login"),
