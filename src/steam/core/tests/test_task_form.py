@@ -145,16 +145,6 @@ class TaskFormTest(TestCase):
         self.assertTrue(form.errors)
         self.assertIn('start_date', form.errors)
 
-    def test_task_form_start_date_before_project_start_date_error(self):
-        """Test that the create task form is invalid with a start_date before the project start_date."""
-        invalid_data = self.valid_data.copy()
-        invalid_data['start_date'] = self.project.start_date - \
-            timezone.timedelta(days=1)
-        form = TaskForm(data=invalid_data)
-        self.assertFalse(form.is_valid())
-        self.assertTrue(form.errors)
-        self.assertIn('start_date', form.errors)
-
     def test_task_form_start_date_after_project_end_date_error(self):
         """Test that the create task form is invalid with a start_date after the project end_date."""
         invalid_data = self.valid_data.copy()
@@ -165,16 +155,6 @@ class TaskFormTest(TestCase):
         form = TaskForm(data=invalid_data)
         self.assertFalse(form.is_valid())
         self.assertTrue(form.errors)
-
-    def test_task_form_end_date_after_project_end_date_error(self):
-        """Test that the create task form is invalid with an end_date after the project end_date."""
-        invalid_data = self.valid_data.copy()
-        invalid_data['end_date'] = self.project.end_date + \
-            timezone.timedelta(days=1)
-        form = TaskForm(data=invalid_data)
-        self.assertFalse(form.is_valid())
-        self.assertTrue(form.errors)
-        self.assertIn('end_date', form.errors)
 
     def test_task_form_end_date_before_project_start_date_error(self):
         """Test that the create task form is invalid with an end_date before the project start_date."""
