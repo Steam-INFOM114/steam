@@ -107,7 +107,7 @@ class Task(models.Model):
         ('3', 'Terminé'),
     )
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, validators=[RegexValidator(r'^\S.*\S$', 'Name cannot start nor end with whitespace.')])
     description = models.TextField(null=True, blank=True)
     start_date  = models.DateField('Date de début')
     end_date = models.DateField('Date de fin')
