@@ -176,7 +176,7 @@ class TaskUpdateTemplateTest(TestCase):
         self.assertEqual(Task.objects.count(), 2)
 
         # Get the page after the post and check if the page contains the new task
-        expected_url = reverse('tasks')
+        expected_url = reverse('task-list')
         self.assertRedirects(response, expected_url)
         response = self.client.get(expected_url)
         self.assertTemplateUsed(response, 'tasks/tasks.html')
@@ -190,7 +190,7 @@ class TaskUpdateTemplateTest(TestCase):
         self.assertEqual(Task.objects.count(), 2)
 
         # Get the page after the post and check if the page contains the new task
-        expected_url = reverse('tasks')
+        expected_url = reverse('task-list')
         self.assertRedirects(response, expected_url)
         response = self.client.get(expected_url)
         self.assertTemplateUsed(response, 'tasks/tasks.html')
@@ -204,7 +204,7 @@ class TaskUpdateTemplateTest(TestCase):
         self.assertEqual(Task.objects.count(), 2)
 
         # Get the page after the post and check if the page contains the new task
-        expected_url = reverse('tasks')
+        expected_url = reverse('task-list')
         self.assertRedirects(response, expected_url)
         response = self.client.get(expected_url)
         self.assertTemplateUsed(response, 'tasks/tasks.html')
