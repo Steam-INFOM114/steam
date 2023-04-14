@@ -1,8 +1,7 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
-# TODO this should test the custom user model, but the project is not defining a custom user model
+from django.contrib.auth import get_user_model
+User = get_user_model()
 class TestUserModel(TestCase):
 
     def setUp(self):
