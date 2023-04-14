@@ -8,14 +8,14 @@ class TestUserModel(TestCase):
         self.user = User(username='test_username', password='test_password', email='test@example.com', first_name='test_firstname', last_name='test_lastname')
 
     def test_user_valid(self):
-        new_user = User.objects.create_user(self.user)
+        new_user = User.objects.create_user(username='test_username', password='test_password', email='test@example.com', first_name='test_firstname', last_name='test_lastname')
         self.assertEqual(new_user.username, self.user.username)
         self.assertEqual(new_user.email, self.user.email)
         self.assertEqual(new_user.first_name, self.user.first_name)
         self.assertEqual(new_user.last_name, self.user.last_name)
 
     def test_user_password_not_raw_stored(self):
-        new_user = User.objects.create_user(self.user)
+        new_user = User.objects.create_user(username='test_username', password='test_password', email='test@example.com', first_name='test_firstname', last_name='test_lastname')
         self.assertNotEqual(new_user.password, self.user.password)
 
     def test_user_username_empty_raises_validation_error(self):
