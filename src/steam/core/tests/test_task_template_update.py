@@ -173,7 +173,7 @@ class TaskUpdateTemplateTest(TestCase):
         self.valid_data['start_date'] = self.valid_data['end_date']
         response = self.client.post(self.url, self.valid_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Task.objects.count(), 2)
+        self.assertEqual(Task.objects.count(), 1)
 
         # Get the page after the post and check if the page contains the new task
         expected_url = reverse('task-list')
@@ -187,7 +187,7 @@ class TaskUpdateTemplateTest(TestCase):
         self.valid_data['start_date'] = self.project.start_date
         response = self.client.post(self.url, self.valid_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Task.objects.count(), 2)
+        self.assertEqual(Task.objects.count(), 1)
 
         # Get the page after the post and check if the page contains the new task
         expected_url = reverse('task-list')
@@ -201,7 +201,7 @@ class TaskUpdateTemplateTest(TestCase):
         self.valid_data['end_date'] = self.project.end_date
         response = self.client.post(self.url, self.valid_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Task.objects.count(), 2)
+        self.assertEqual(Task.objects.count(), 1)
 
         # Get the page after the post and check if the page contains the new task
         expected_url = reverse('task-list')
