@@ -92,15 +92,14 @@ class TaskModelTest(TestCase):
         """
         Test that a Task cannot be created without a project
         """
+        task = Task(
+            name='Test Task 2',
+            start_date=self.now,
+            end_date=self.now + timezone.timedelta(days=1),
+            status='1',
+        )
         with self.assertRaises(ValidationError):
-            task = Task(
-                name='Test Task 2',
-                start_date=self.now,
-                end_date=self.now + timezone.timedelta(days=1),
-                status='1',
-            )
-            with self.assertRaises(ValidationError):
-                task.full_clean()
+            task.full_clean()
 
     def test_task_no_name_raises_validation_error(self):
         """
