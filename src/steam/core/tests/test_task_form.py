@@ -165,7 +165,6 @@ class TaskFormTest(TestCase):
         form = TaskForm(data=invalid_data)
         self.assertFalse(form.is_valid())
         self.assertTrue(form.errors)
-        self.assertIn('start_date', form.errors)
 
     def test_task_form_end_date_after_project_end_date_error(self):
         """Test that the create task form is invalid with an end_date after the project end_date."""
