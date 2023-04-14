@@ -63,7 +63,6 @@ class TaskUpdate(UpdateView):
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('task-list')
 
-def delete(request, id):
-  task = Task.objects.get(id=id)
-  task.delete()
-  return HttpResponseRedirect(reverse('task-list'))
+class TaskDeleteView(DeleteView):
+    model = Task
+    success_url = reverse_lazy('task-list')
