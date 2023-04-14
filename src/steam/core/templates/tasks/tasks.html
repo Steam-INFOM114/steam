@@ -9,7 +9,12 @@
     <tr>
         <td>{{task.name}}</td>
         <td><a href="{% url 'task-update' task.id %}">Update</a></td>
-        <td><a href="{% url 'task-delete' task.id %}">Delete</a></td>
+        <td>
+          <form method="post" action="{% url 'task-delete' task.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+          </form>
+        </td>
     </tr>
     {% empty %}
         <h3>No tasks</h3>
