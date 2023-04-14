@@ -33,8 +33,8 @@ class TestTaskViewDetail(TestCase):
         self.assertContains(response, self.task.description)
         self.assertContains(response, self.project)
         self.assertContains(response, self.task.get_status_display())
-        self.assertContains(response, self.task.start_date)
-        self.assertContains(response, self.task.end_date)
+        self.assertContains(response, self.task.start_date.strftime('%d/%m/%Y'))
+        self.assertContains(response, self.task.end_date.strftime('%d/%m/%Y'))
 
     def test_task_view_detail_not_found(self):
         """Test that the task view detail returns a 404 if the task does not exist."""
