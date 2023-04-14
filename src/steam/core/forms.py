@@ -3,7 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Project
 from django.utils.text import slugify
+import re
+from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 # TODO: use form in template
 class ProjectForm(forms.ModelForm):
