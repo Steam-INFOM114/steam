@@ -41,7 +41,7 @@ class Task(models.Model):
     start_date  = models.DateField('Date de début')
     end_date = models.DateField('Date de fin')
     status = models.CharField(max_length=1, choices=CHOICES, default='À commencer')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks', blank=False)
 
 
     def __str__(self):
