@@ -1,6 +1,5 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView,DetailView
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy,reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.urls import reverse_lazy
 from .models import Project
 from django.contrib.auth.models import User
 from .forms import ProjectForm,TaskForm
