@@ -1,9 +1,13 @@
 from django.test import TestCase
-from django.urls import reverse
 from core.models import Project,Task
 from django.utils import timezone
-from django.contrib.auth.models import User
 import copy
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
 
 class TaskUpdateViewTest(TestCase):
     def setUp(self):
