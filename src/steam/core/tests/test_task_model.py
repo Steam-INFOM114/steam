@@ -1,9 +1,10 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from core.models import Project, Task
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class TaskModelTest(TestCase):
     def setUp(self):

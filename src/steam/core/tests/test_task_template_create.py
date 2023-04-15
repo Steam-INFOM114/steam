@@ -1,8 +1,10 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from core.models import Project, Task
-from django.urls import reverse
 from django.utils import timezone
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class TaskCreateTemplateTest(TestCase):
