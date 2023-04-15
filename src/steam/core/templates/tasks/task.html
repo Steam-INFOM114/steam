@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{task}}</h1>
+
+<tr>
+    <td>Description:</td><br>
+    <td>{{task.description}}</td><br>
+    <td>Date de commencement: {{task.start_date|date:"d/m/Y" }}</td><br>
+    <td>Date de fin: {{task.end_date|date:"d/m/Y" }}</td><br>
+    <td>Status: {{task.get_status_display }}</td><br>
+    <td>Projet: {{task.project }}</td><br>
+</tr>
+
+{% endblock %}

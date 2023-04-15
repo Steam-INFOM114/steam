@@ -1,16 +1,16 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Project
+from .models import Project, Task
 from django.utils.text import slugify
-import re
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
 
 # TODO: use form in template
+
+
 class ProjectForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
@@ -41,10 +41,34 @@ class ProjectForm(forms.ModelForm):
         self.fields['members'].queryset = User.objects.all()
 
 
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = '__all__'  # ['name','description','start_date','end_date']
+        labels = {
+            'name': 'Nom',
+            'description': 'Description',
+            'start_date': 'Date de début',
+            'end_date': 'Date de fin',
+            'status': 'Statut',
+            'project': 'Projet'
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Nom de la tâche', 'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Description de la tâche', 'class': 'form-control', 'rows': 3}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'project': forms.Select(attrs={'class': 'form-select'})
+        }
+
+
 class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
-    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
-    email = forms.EmailField(max_length=254, required=True, help_text='Required. Enter a valid email address.')
+    first_name = forms.CharField(
+        max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(
+        max_length=30, required=True, help_text='Required.')
+    email = forms.EmailField(max_length=254, required=True,
+                             help_text='Required. Enter a valid email address.')
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -52,4 +76,5 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email',)
+        fields = UserCreationForm.Meta.fields + \
+            ('first_name', 'last_name', 'email',)

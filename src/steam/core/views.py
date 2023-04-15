@@ -1,15 +1,16 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from .models import Project
+from .models import Project, Task
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import User
+from .forms import ProjectForm, TaskForm, CustomUserCreationForm
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ProjectForm, CustomUserCreationForm
-from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
+
 
 class ProjectListView(ListView):
     model = Project
@@ -46,10 +47,41 @@ class ProjectDeleteView(DeleteView):
     success_url = reverse_lazy('project-list')
 
 
+class TaskDetail(DetailView):
+    model = Task
+    context_object_name = 'task'
+    template_name = "tasks/task.html"
+
+
+class TaskList(ListView):
+    model = Task
+    context_object_name = 'tasks'
+    template_name = "tasks/tasks.html"
+
+
+class TaskCreate(CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "tasks/task_form.html"
+    success_url = reverse_lazy('task-list')
+
+
+class TaskUpdate(UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "tasks/task_form.html"
+    success_url = reverse_lazy('task-list')
+
+
+class TaskDeleteView(DeleteView):
+    model = Task
+    success_url = reverse_lazy('task-list')
+
+
 def loginPage(request):
     if request.user.is_authenticated:
         return redirect('project-list')
-    if request.method == "POST": #get username and password
+    if request.method == "POST":  # get username and password
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
         # Check if the user exists
@@ -87,10 +119,9 @@ def registerPage(request):
     else:
         form = CustomUserCreationForm()
 
-    return render(request, 'users/register.html',{'form':form})
+    return render(request, 'users/register.html', {'form': form})
+
 
 def logoutUser(request):
     logout(request)
     return redirect('project-list')
-
-
