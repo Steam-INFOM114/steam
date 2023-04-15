@@ -47,6 +47,8 @@ class Task(models.Model):
         max_length=1, choices=CHOICES, default='À commencer')
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='tasks', blank=False)
+    assignees = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='tasks')
 
     def __str__(self):
         return self.name

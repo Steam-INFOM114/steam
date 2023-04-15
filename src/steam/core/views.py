@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import User
 from .forms import ProjectForm, TaskForm, CustomUserCreationForm
 from django.contrib.auth.forms import UserCreationForm
+from django.http import Http404
 
 
 User = get_user_model()
@@ -65,6 +66,18 @@ class TaskCreate(CreateView):
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('task-list')
 
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreate, self).get_form_kwargs()
+        kwargs['project_id'] = self.kwargs['project_id']  # add project_id to form kwargs
+        return kwargs
+
+    # If project id is not in db,raise 404 error
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.project = Project.objects.get(id=self.kwargs['project_id'])
+        except Project.DoesNotExist:
+            raise Http404('Project does not exist')
+        return super(TaskCreate, self).dispatch(request, *args, **kwargs)
 
 class TaskUpdate(UpdateView):
     model = Task
