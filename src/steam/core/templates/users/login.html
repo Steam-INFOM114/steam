@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-danger" role="alert">
+      <strong {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</strong>
+    </div>
+  {% endfor %}
+{% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2 class="text-center mb-4">Login</h2>
+        <form method="POST">
+          {% csrf_token %}
+
+
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" name="username" placeholder="Enter a Username" required/>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter a Password" required/>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block mt-4">Login</button>
+        </form>
+        <div class="text-center mt-3">
+          <p>Haven't signed up yet?</p>
+          <a href="{% url 'register' %}" class="btn btn-link">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
