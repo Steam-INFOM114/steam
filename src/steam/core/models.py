@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, EmailValidator
+from django.conf import settings
 
 
 class Project(models.Model):
@@ -13,8 +14,9 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_archived = models.BooleanField(default=False)
     owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='owned_projects')
-    members = models.ManyToManyField(User, related_name='projects')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_projects')
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='projects')
 
     def __str__(self):
         return self.name
@@ -36,13 +38,15 @@ class Task(models.Model):
         ('3', 'Terminé'),
     )
 
-    name = models.CharField(max_length=100, validators=[RegexValidator(r'^\S.*\S$', 'Name cannot start nor end with whitespace.')])
+    name = models.CharField(max_length=100, validators=[RegexValidator(
+        r'^\S.*\S$', 'Name cannot start nor end with whitespace.')])
     description = models.TextField(null=True, blank=True)
-    start_date  = models.DateField('Date de début')
+    start_date = models.DateField('Date de début')
     end_date = models.DateField('Date de fin')
-    status = models.CharField(max_length=1, choices=CHOICES, default='À commencer')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks', blank=False)
-
+    status = models.CharField(
+        max_length=1, choices=CHOICES, default='À commencer')
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name='tasks', blank=False)
 
     def __str__(self):
         return self.name
@@ -51,8 +55,19 @@ class Task(models.Model):
         super().clean()
         if not (self.start_date == None or self.end_date == None):
             if not (self.start_date <= self.end_date):
-                raise ValidationError('La date de début doit être antérieure à la date de fin.')
-            
+                raise ValidationError(
+                    'La date de début doit être antérieure à la date de fin.')
+
             if hasattr(self, 'project') and \
-            (self.start_date < self.project.start_date or self.end_date > self.project.end_date):
-                raise ValidationError("Les dates d'une tâche ne peuvent pas dépasser les dates du projet")
+                    (self.start_date < self.project.start_date or self.end_date > self.project.end_date):
+                raise ValidationError(
+                    "Les dates d'une tâche ne peuvent pas dépasser les dates du projet")
+
+
+class MyUser(AbstractUser):
+    email = models.EmailField(validators=[EmailValidator(
+        message="Please enter a valid email address.")])
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(MyUser, self).save(*args, **kwargs)

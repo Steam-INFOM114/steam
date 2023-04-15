@@ -1,7 +1,11 @@
 from django.urls import path
-from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView
+from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView, loginPage, logoutUser, registerPage
+
 
 urlpatterns = [
+    path('login/', loginPage, name="login"),
+    path('logout/', logoutUser, name="logout"),
+    path('register/', registerPage, name="register"),
     path('projects/', ProjectListView.as_view(), name='project-list'),
     path('project/create/', ProjectCreateView.as_view(), name='project-create'),
     path('project/<int:pk>/update/',
