@@ -35,7 +35,6 @@ class TestCreateAccountView(TestCase):
         self.assertEquals(User.objects.count(), 0)
 
     def test_register_view_post_username_empty_invalid(self):
-        self.user.save()
         response = self.client.post(reverse('register'), {'username': '', 'password1': self.user.password, 'password2': self.user.password, 'email': self.user.email, 'first_name': self.user.first_name, 'last_name': self.user.last_name})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/register.html')
