@@ -1,21 +1,10 @@
 {% extends "base.html" %}
+
+{% block title %}{% if task.pk %}Modifier{% else %}Créer{% endif %} une tâche{% endblock %}
+
+{% load crispy_forms_tags %}
+
 {% block content %}
-
-{% if form.errors %}
-    {% for field in form %}
-        {% for error in field.errors %}
-            <div class="alert alert-danger" role="alert">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
-    {% endfor %}
-
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-{% endif %}
 
 <div class="container mt-4 mb-4">
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -27,17 +16,7 @@
                 <div class="card-body">
                     <form method="POST" action="">
                         {% csrf_token %}
-                        {% for field in form %}
-                                <div class="row align-items-center py-3">
-                                    <div class="col-md-3 ps-5">
-                                        <h6 class="mb-0">{{ field.label_tag }}</h6>
-                                    </div>
-                                    <div class="col-md-9 pe-5">
-                                        {{ field }}
-                                    </div>
-                                </div>
-                            <hr class="mx-n3">
-                        {% endfor %}
+                        {{ form|crispy }}
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">{% if task.pk %}Modifier{% else %}Créer{% endif %}</button>
                         </div>
