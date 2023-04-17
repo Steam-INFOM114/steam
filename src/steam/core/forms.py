@@ -9,37 +9,29 @@ from django.db.models import Q
 
 User = get_user_model()
 
-# TODO: use form in template
-
 
 class ProjectForm(forms.ModelForm):
-    members = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.CheckboxSelectMultiple(),
-        required=False
-    )
-
     class Meta:
         model = Project
-        fields = [
-            'name',
-            'description',
-            'start_date',
-            'end_date',
-            'is_archived',
-            'owner',
-            'members'
-        ]
-        widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'owner': forms.Select(attrs={'class': 'form-control'}),
-        }
+        exclude = ['owner']
 
-    def __init__(self, *args, **kwargs):
-        super(ProjectForm, self).__init__(*args, **kwargs)
-        # self.fields['members'].queryset = User.objects.all().exclude(id=self.instance.owner.id)
-        self.fields['members'].queryset = User.objects.all()
+        # TODO: localization of labels
+        labels = {
+            'name': 'Nom',
+            'description': 'Description',
+            'start_date': 'Date de début',
+            'end_date': 'Date de fin',
+            'is_archived': 'Archivé',
+            'members': 'Membres'
+        }
+        widgets = {
+            # TODO: localization of placeholders
+            'name': forms.TextInput(attrs={'placeholder': 'Nom du projet', 'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Description du projet', 'class': 'form-control', 'rows': 3}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'is_archived': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        }
 
 
 class TaskForm(forms.ModelForm):

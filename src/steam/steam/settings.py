@@ -113,6 +113,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'login' # The URL of the login page
+LOGIN_REDIRECT_URL = 'home' # The URL where authenticated users are redirected to after login
+
 AUTH_USER_MODEL = 'core.MyUser'
 
 # Internationalization
