@@ -1,7 +1,8 @@
 from datetime import date
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
 from core.models import Project
 
 User = get_user_model()
@@ -9,7 +10,7 @@ User = get_user_model()
 class TestProjectView(TestCase):
     def setUp(self):
         # Create some users
-        self.users = [User(username='user{}'.format(i)) for i in range(4)]
+        self.users = [User(username='user{}'.format(i), email='user{}@example.com'.format(i)) for i in range(4)]
         for user in self.users:
             user.set_password('password')
             user.save()
@@ -54,6 +55,8 @@ class TestProjectView(TestCase):
         self.assertEqual(new_project.end_date, date(2019, 1, 1))
         self.assertEqual(new_project.owner, self.users[0])
         self.assertQuerysetEqual(new_project.members.all(), map(repr, [self.users[1], self.users[2]]), ordered=False)
+        self.assertNotEqual(new_project.key, '')
+        self.assertEqual(len(new_project.key), 5)
 
         # Get the page after the post and check if the page contains the new project
         expected_url = reverse('project-list')
@@ -223,3 +226,82 @@ class TestProjectView(TestCase):
     def test_project_delete_view_project_does_not_exist(self):
         response = self.client.get(reverse('project-delete', kwargs={'pk': 999}))
         self.assertEqual(response.status_code, 404)
+
+
+    def test_project_registration_valid_key(self):
+        """Test that a user can register to a project using a valid key"""
+        # Test that initially users[3] isn't a member of projects[0]
+        project = self.projects[0]
+        user = self.users[3]
+        self.assertNotIn(user, project.members.all())
+
+        # Login as users[3]
+        self.client.login(username=user.username, password='password')
+
+        # Register the user to the project using the view
+        key = project.key
+        response = self.client.post(reverse('project-register'), data={'key': key}, follow=True)
+        self.assertRedirects(response, reverse('project-list'), status_code=302, target_status_code=200)
+
+        # Verify that the user has been added to the project and a success message is shown
+        project.refresh_from_db()
+        self.assertIn(user, project.members.all())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(messages)
+        self.assertEqual(str(messages[0]), f'Vous êtes désormais inscrit au projet: {project.name}.')
+
+    def test_project_registration_invalid_key(self):
+        """Test that a user can't register to a project using an invalid key"""
+        # Send a post request with an invalid key
+        self.client.login(username=self.users[3].username, password='password')
+        response = self.client.post(reverse('project-register'), data={'key': 'invalid-key'})
+
+        # Assert: verify that an error message is shown
+        self.assertRedirects(response, reverse('project-list'), status_code=302, target_status_code=200)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(messages)
+        self.assertEqual(str(messages[0]), 'Le projet avec la clé fournie n\'existe pas.')
+
+    def test_project_registration_get_not_allowed(self):
+        """Test that get requests to the project registration view yields an error"""
+        # Exercise: send a get request to the view
+        self.client.login(username='user3', password='password')
+        response = self.client.get(reverse('project-register'))
+
+        # Assert: verify that the response has status 405 (method not allowed)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.json(), {'error': 'GET method not allowed'})
+
+    def test_project_registration_not_authenticated(self):
+        """Test that a user can't register to project unless he is authenticated"""
+        client = Client()
+        response = client.post(reverse('project-register'), data={'key': 'invalid-key'})
+
+        self.assertEqual(response.status_code, 302) # assert redirection status code
+        login_url = reverse('login') + '?next=' + reverse('project-register')
+        self.assertRedirects(response, login_url) # assert redirection to login page
+
+    def test_project_registration_existing_member(self):
+        """Test that the view yields an appropriate message when a user registers to a projet
+        in which he is already a member"""
+        # users[1] is already a member of projects[0]
+        project = self.projects[0]
+        user = self.users[1]
+        self.assertIn(user, project.members.all())
+        members_count_before = project.members.count()
+
+        # Login as users[1]
+        self.client.login(username=user.username, password='password')
+
+        # Register the user in the project using the view
+        key = project.key
+        response = self.client.post(reverse('project-register'), data={'key': key}, follow=True)
+        self.assertRedirects(response, reverse('project-list'), status_code=302, target_status_code=200)
+
+        # Verify that no changes have been made to project.members and an appropriate message is shown
+        project.refresh_from_db()
+        self.assertIn(user, project.members.all())
+        self.assertEqual(project.members.count(), members_count_before)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(messages)
+        self.assertEqual(str(messages[0]), f'Vous êtes déjà inscrit au projet: {project.name}.')
