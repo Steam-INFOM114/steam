@@ -17,9 +17,22 @@
         </td>
     </tr>
     {% empty %}
-        <h3>No tasks</h3>
+        <h3>No task</h3>
+    {% endfor %}
+
+    {% for meeting in meetings %}
+    <tr>
+        <td>{{meeting.name}}</td>
+    </tr>
+    {% empty %}
+        <h3>No meeting</h3>
     {% endfor %}
 </table>
-<a href="{% url 'task-create' %}">Create</a>
+<a href="{% url 'task-create' %}">Create task</a>
+<a href="{% url 'meeting-create' %}">Create Meeting</a>
+
+{% load plotly_dash %}
+
+{% plotly_app name='SimpleExample' ratio=0.8 %}
 
 {% endblock %}
