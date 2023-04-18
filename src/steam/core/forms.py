@@ -1,7 +1,15 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Project
-from .models import Task
+from django.contrib.auth.forms import UserCreationForm
+from .models import Project, Task, Meeting
+from django.utils.text import slugify
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+
+# TODO: use form in template
+
 
 class ProjectForm(forms.ModelForm):
     class Meta:
@@ -50,3 +58,37 @@ class TaskForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'project': forms.Select(attrs={'class': 'form-select'})
         }
+
+class MeetingForm(forms.ModelForm):
+    class Meta:
+        model = Meeting
+        fields = ['name','description','start_date','project']
+        labels = {
+            'name': 'Nom',
+            'description': 'Description',
+            'start_date': 'Date de la réunion',
+            'project': 'Projet'
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Nom de la réunion', 'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Description de la réunion', 'class': 'form-control', 'rows': 3}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'project': forms.Select(attrs={'class': 'form-select'})
+        }
+
+class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(
+        max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(
+        max_length=30, required=True, help_text='Required.')
+    email = forms.EmailField(max_length=254, required=True,
+                             help_text='Required. Enter a valid email address.')
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        return slugify(username)
+
+    class Meta:
+        model = User
+        fields = UserCreationForm.Meta.fields + \
+            ('first_name', 'last_name', 'email',)

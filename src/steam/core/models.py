@@ -70,7 +70,7 @@ class Task(models.Model):
     start_date = models.DateField('Date de début')
     end_date = models.DateField('Date de fin')
     status = models.CharField(
-        max_length=1, choices=CHOICES, default='À commencer')
+        max_length=1, choices=CHOICES, default='Réunion')
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='tasks', blank=False)
 
@@ -89,6 +89,19 @@ class Task(models.Model):
                 raise ValidationError(
                     "Les dates d'une tâche ne peuvent pas dépasser les dates du projet")
 
+class Meeting(models.Model):
+
+    name = models.CharField(max_length=100, validators=[RegexValidator(
+        r'^\S.*\S$', 'Name cannot start nor end with whitespace.')])
+    description = models.TextField(null=True, blank=True)
+    start_date = models.DateField('Date de début')
+    end_date = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=10, default='Réunion')
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name='meetings', blank=False)
+
+    def __str__(self):
+        return self.name
 
 class MyUser(AbstractUser):
     email = models.EmailField(validators=[EmailValidator(
