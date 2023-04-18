@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     # 3rd party
     'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'bootstrap4',
+    'widget_tweaks',
+    'crispy_forms',
+    "crispy_bootstrap5",
 ]
 
 # Standard Django middleware with the addition of both
@@ -121,9 +124,9 @@ AUTH_USER_MODEL = 'core.MyUser'
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-BE'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Brussels'
 
 USE_I18N = True
 
@@ -170,3 +173,9 @@ PLOTLY_COMPONENTS = [
     # Other components, as needed
     'dash_bootstrap_components',
 ]
+
+# Crispy forms config
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
