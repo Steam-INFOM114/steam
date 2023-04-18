@@ -53,6 +53,11 @@ class TestUserModel(TestCase):
         with self.assertRaises(ValidationError):
             User.objects.create_user(self.user)
 
+    def test_user_email_not_unique_raises_validation_error(self):
+        User.objects.create_user(username='test_username', password='test_password', email='test@example.com', first_name='test_firstname', last_name='test_lastname')
+        with self.assertRaises(ValidationError):
+            User.objects.create_user(username='test_username2', password='test_password2', email='test@example.com', first_name='test_firstname_other', last_name='test_lastname_other')
+
     def test_user_email_empty_raises_validation_error(self):
         self.user.email = ''
         with self.assertRaises(ValidationError):
