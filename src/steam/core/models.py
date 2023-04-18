@@ -83,7 +83,8 @@ class Task(models.Model):
 
 class MyUser(AbstractUser):
     email = models.EmailField(validators=[EmailValidator(
-        message="Please enter a valid email address.")])
+        message="Please enter a valid email address.")],
+        unique=True)
 
     def save(self, *args, **kwargs):
         self.full_clean()
