@@ -23,6 +23,13 @@
     {% for meeting in meetings %}
     <tr>
         <td>{{meeting.name}}</td>
+        <td><a href="{% url 'meeting-update' meeting.id %}">Update</a></td>
+        <td>
+          <form method="post" action="{% url 'meeting-delete' meeting.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+          </form>
+        </td>
     </tr>
     {% empty %}
         <h3>No meeting</h3>

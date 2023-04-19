@@ -1,6 +1,6 @@
 from django.urls import path
 from . import viewGantt
-from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, MeetingCreate, TaskUpdate, TaskDeleteView, loginPage, logoutUser, registerPage
+from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, MeetingCreate, TaskUpdate, TaskDeleteView, MeetingUpdate, MeetingDeleteView, loginPage, logoutUser, registerPage
 
 
 urlpatterns = [
@@ -19,5 +19,7 @@ urlpatterns = [
     path('task/create/', TaskCreate.as_view(), name='task-create'),
     path('task/createM/', MeetingCreate.as_view(), name='meeting-create'),
     path('task/<int:pk>/update/', TaskUpdate.as_view(), name='task-update'),
+    path('task/<int:pk>/updateM/', MeetingUpdate.as_view(), name='meeting-update'),
     path('task/<int:pk>/delete/', TaskDeleteView.as_view(), name='task-delete'),
+    path('task/<int:pk>/deleteM/', MeetingDeleteView.as_view(), name='meeting-delete'),
 ]
