@@ -89,7 +89,7 @@ class ProjectRegisterView(LoginRequiredMixin, View):
             messages.error(request, 'Le projet avec la clé fournie n\'existe pas.', extra_tags='danger')
             return redirect('project-list')
         else:
-            if request.user in project.members.all():
+            if request.user in project.members.all() or request.user == project.owner:
                 messages.info(request, f'Vous êtes déjà inscrit au projet: {project.name}.')
             else:
                 # add the user to the project
