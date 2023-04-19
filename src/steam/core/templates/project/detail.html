@@ -47,6 +47,12 @@
           </div>
           <div class="form-group">
             <div class="mb-3">
+              <input class="form-check-input checkboxinput" type="checkbox" value="" {% if project.is_archived %}checked{% endif %} rows="3" disabled readonly>
+              <label class="form-label">Archivé</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="mb-3">
               <label class="form-label">Membres</label>
               {% if project.members.all %}
                 <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
