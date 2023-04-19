@@ -75,7 +75,7 @@ class MeetingForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'placeholder': 'Nom de la réunion', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': 'Description de la réunion', 'class': 'form-control', 'rows': 3}),
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'project': forms.Select(attrs={'class': 'form-select'})
+            'project': forms.Select(attrs={'class': 'form-select'}),
         }
 
 class CustomUserCreationForm(UserCreationForm):

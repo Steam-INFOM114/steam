@@ -23,8 +23,6 @@ config = {'displaylogo': False,
           'modeBarButtonsToRemove': ['lasso2d','select2d','autoScale']
           }
 
-currentId = {'Id': 0}
-
 def update_gantt():
     #data gathering
     df = pd.DataFrame(list(Task.objects.all().values()))
@@ -35,8 +33,6 @@ def update_gantt():
         df2.at[i,'end_date'] = row.start_date + pd.Timedelta(days=1)
 
     df = pd.concat([df,df2])
-
-    print(df)
 
     if not (df.empty):
         df.sort_values(by='end_date', inplace = True)
@@ -82,15 +78,12 @@ def update_gantt():
         )
     ])
 
-    #fig.add_trace(1, row=1, col = 1)
-
     app.layout = html.Div([
         dcc.Graph(
             id='basic-interactions',
             figure=fig,
             config=config
         ),
-        dcc.Store(id='currentId'),
 
         html.Div([
             html.Pre(id='click-data', style=styles['pre']),
@@ -103,14 +96,19 @@ def update_gantt():
 def display_click_data(clickData):
     df = pd.DataFrame(list(Task.objects.all().values()))
     x = df.loc[df['name'] == clickData['points'][0]['y']]
-    text = "Nom: " + x.name + "\n"
-    text = text + "Description: " + x.description + "\n"
-    text = text + "Date de départ: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
-    text = text + "Date de fin: " + x.astype(str).tail(1).reset_index().loc[0, 'end_date'] + "\n"
-    currentId['Id'] = x.id
-    print(currentId['Id'])
+    if x.empty:
+        df = pd.DataFrame(list(Meeting.objects.all().values()))
+        x = df.loc[df['name'] == clickData['points'][0]['y']]
+        text = "Nom: " + x.name + "\n"
+        text = text + "Description: " + x.description + "\n"
+        text = text + "Date de la réunion: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
+    else:
+        text = "Nom: " + x.name + "\n"
+        text = text + "Description: " + x.description + "\n"
+        text = text + "Date de départ: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
+        text = text + "Date de fin: " + x.astype(str).tail(1).reset_index().loc[0, 'end_date'] + "\n"
     return text
 
 def gantt(request):
     update_gantt()
-    return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': Task.objects.all().values(), 'meetings': Meeting.objects.all().values(), 'selected': currentId['Id']})
+    return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': Task.objects.all().values(), 'meetings': Meeting.objects.all().values()})

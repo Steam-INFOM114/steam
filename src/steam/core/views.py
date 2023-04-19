@@ -62,8 +62,18 @@ class TaskUpdate(UpdateView):
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('task-list')
 
+class MeetingUpdate(UpdateView):
+    model = Meeting
+    form_class = MeetingForm
+    template_name = "tasks/task_form.html"
+    success_url = reverse_lazy('task-list')
+
 class TaskDeleteView(DeleteView):
     model = Task
+    success_url = reverse_lazy('task-list')
+
+class MeetingDeleteView(DeleteView):
+    model = Meeting
     success_url = reverse_lazy('task-list')
 
 class MeetingCreate(CreateView):
