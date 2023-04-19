@@ -3,13 +3,87 @@
 {% block title %}Projets{% endblock %}
 
 {% block content %}
+
+<style>
+  .icon {
+    color: #6D6A6A;
+    font-size: 17px;
+    transition: background-color 0.3s ease-in-out;
+    border: none;
+  }
+
+  .icon:hover {
+    background-color: #ccc;
+  }
+
+  .plus {
+    font-size: 30px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin-bottom: 1px;
+    margin-left: 10px;
+  }
+
+  .plus i {
+    font-size: 24px;
+    vertical-align: 10px;
+  }
+
+  .alert-message{
+    margin-top: 10px;
+  }
+
+  .form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+  }
+
+
+</style>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-message" role="alert">
+      <strong {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</strong>
+    </div>
+  {% endfor %}
+{% endif %}
+
 <div class="card mt-4 mb-4">
   <div class="card-header">
     <div style="display: flex; align-items: center;">
       <h2 style="margin: 0;">Projets</h2>
       {% if user.is_authenticated %}
-      <a href="{% url 'project-create' %}" class="btn btn-success btn-sm" style="margin-right: auto; margin-left: 4px;"><i class="bi bi-plus"></i></a>
+        <a href="{% url 'project-create' %}" class="btn btn-sm icon plus">
+          <i class="bi bi-plus"></i>
+        </a>
+        <!-- Bouton pour afficher le modal -->
+        <button class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#registerModal">
+          <i class="bi bi-pen"></i>
+        </button>
       {% endif %}
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalLabel">Inscription à un projet</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'project-register' %}" method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="project-key-input" class="form-label">Clé du projet:</label>
+                <input type="text" class="form-control" id="project-key-input" name="key" required>
+              </div>
+              <button type="submit" class="btn btn-primary">S'inscrire</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="card-body">
@@ -37,8 +111,39 @@
               <td>{{ project.start_date|date:"d/m/Y" }}</td>
               <td>{{ project.end_date|date:"d/m/Y" }}</td>
               <td>{{ project.owner }}</td>
-              <td>{% if project.is_archived %}<span class="badge bg-secondary">Oui</span> {% else %} <span class="badge bg-secondary">Non</span> {% endif %}</td>
               <td>
+                {% if project.is_archived %}
+                  <span class="badge bg-secondary">Oui</span>
+                {% else %}
+                  <span class="badge bg-secondary">Non</span>
+                {% endif %}
+              </td>
+              <td>
+                 <!-- Button key trigger modal -->
+                  {% if user == project.owner %}
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <i class="bi bi-key"></i>
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Clé</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="input-group">
+                              <input type="text" class="form-control" value="{{project.key}}" id="project-key" readonly>
+                              <button class="btn btn-outline-secondary" type="button" id="copy-btn" data-clipboard-target="#project-key" data-bs-toggle="tooltip">
+                                <i class="bi bi-clipboard"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
                 <a href="{% url 'project-detail' project.id %}" class="btn btn-success btn-sm"><i class="bi bi bi-eye"></i></a>
                 {% if user == project.owner %}
                   <a href="{% url 'project-update' project.id %}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
@@ -70,6 +175,32 @@
       },
     });
   });
+// Récupère l'élément qui contient le texte à copier
+var message = document.getElementById('project-key');
+
+// Initialise l'objet ClipboardJS avec le bouton "Copier"
+var clipboard = new ClipboardJS('#copy-btn', {
+    text: function() {
+        return message.innerText;
+    }
+});
+
+// Affiche un message de confirmation lorsque la copie est réussie
+clipboard.on('success', function(e) {
+    var tooltipTriggerEl = document.getElementById('copy-btn');
+    var tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+        title: 'Copié!',
+        placement: 'bottom',
+        trigger: 'manual'
+    });
+
+    // Affiche le tooltip pendant 2 secondes
+    tooltip.show();
+    setTimeout(function() {
+        tooltip.hide();
+    }, 3000);
+});
+
 </script>
 {% endif %}
 {% endblock %}
