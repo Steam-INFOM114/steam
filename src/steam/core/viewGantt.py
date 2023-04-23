@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from dash import dcc, html
 import plotly.express as px
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import pandas as pd
 from .models import Task, Meeting
 from django.utils import timezone
@@ -127,15 +127,18 @@ def display_click_data(clickData):
 # Delete the selected item when the delete button is clicked
 @app.callback(
     Output('delete-item-output', 'children'),
-    [Input('delete-item-button', 'n_clicks')])
-def delete_task_meeting(n_clicks):
-    if n_clicks is not None:
-        t = Task.objects.first()
-        if t:
-            t.delete()
-            print("Task deleted")
+    [Input('delete-item-button', 'n_clicks')],
+    [State('basic-interactions', 'clickData')])
+def delete_task_meeting(n_clicks, clickData):
+    # TODO : delete according to id
+    if n_clicks is not None and clickData is not None:
+        name = clickData['points'][0]['y']
+        task = Task.objects.filter(name=name)
+        if task:
+            task.delete()
         else:
-            print("No task to delete")
+            meeting = Meeting.objects.filter(name=name)
+            meeting.delete()
 
 # TODO : update the task or meeting when the update button is clicked
 def update_task_meeting(clickData):
