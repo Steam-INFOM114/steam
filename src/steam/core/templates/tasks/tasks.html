@@ -35,8 +35,8 @@
         <h3>No meeting</h3>
     {% endfor %}
 </table>
-<a href="{% url 'task-create' %}">Create task</a>
-<a href="{% url 'meeting-create' %}">Create Meeting</a>
+<a href="{% url 'task-create' %}" class="btn btn-primary btn-md active" role="button" aria-pressed="true">Ajouter une tâche</a>
+<a href="{% url 'meeting-create' %}" class="btn btn-primary btn-md active" role="button" aria-pressed="true">Ajouter une réunion</a>
 
 {% load plotly_dash %}
 

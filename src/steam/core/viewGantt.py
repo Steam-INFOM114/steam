@@ -12,6 +12,12 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = DjangoDash('SimpleExample')   # replaces dash.Dash
 
+df = pd.DataFrame(columns=["name", "start_date", "end_date","status"])
+ftmp = px.timeline(df, x_start="start_date", x_end="end_date", y="name", color="status", color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'}, hover_name="name",
+                             hover_data={'name':False,
+                                         'status':False
+                            })
+
 styles = {
     'pre': {
         'border': 'thin lightgrey solid',
@@ -23,7 +29,40 @@ config = {'displaylogo': False,
           'modeBarButtonsToRemove': ['lasso2d','select2d','autoScale']
           }
 
+app.layout = html.Div([
+    dcc.Graph(
+        id='basic-interactions',
+        figure= ftmp,
+        config=config
+    ),
+
+    html.Div([
+        html.Pre(id='click-data', style=styles['pre']),
+    ], className='three columns'),
+
+    # Add delete button
+    html.Div([
+        html.Button("Supprimer", id="delete-item-button") ,
+        html.Div(id='delete-item-output')
+    ]),
+
+])
+
+@app.callback(
+    Output('basic-interactions', 'figure'),
+    [Input('delete-item-output', 'children')]
+)
 def update_gantt():
+    return generate_data()
+
+@app.callback(
+    Output('basic-interactions', 'figure'),
+    [Input('basic-interactions', 'id')]
+)
+def set_inital_data():
+    return generate_data()
+
+def generate_data():
     #data gathering
     df = pd.DataFrame(list(Task.objects.all().values()))
 
@@ -45,10 +84,21 @@ def update_gantt():
         df['status'] = ''
 
     #create gantt figure
-    fig = px.timeline(df, x_start="start_date", x_end="end_date", y="name", color="status",color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'}, hover_name="name",
+    global fig
+    fig = px.timeline(df, x_start="start_date", x_end="end_date", y="name", color="status", color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'}, hover_name="name",
                              hover_data={'name':False,
                                          'status':False
                             })
+
+    fig.for_each_trace(
+        lambda trace: trace.update(visible=True,marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0])) if trace.name == '1' else (),
+    )
+
+    fig.for_each_trace(
+        lambda trace: print(trace)
+    )
+
+    #fig.update_traces(marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0]))
 
     fig.update_yaxes(autorange="reversed")
     fig.update_layout(clickmode='event+select', height=700, margin={'l': 0, 'b': 0, 'r': 0, 't': 30},yaxis_title=None,legend_title="")
@@ -78,17 +128,9 @@ def update_gantt():
         )
     ])
 
-    app.layout = html.Div([
-        dcc.Graph(
-            id='basic-interactions',
-            figure=fig,
-            config=config
-        ),
+    return {'data': [fig],}
 
-        html.Div([
-            html.Pre(id='click-data', style=styles['pre']),
-        ], className='three columns'),
-    ])
+
 
 @app.callback(
     Output('click-data', 'children'),
@@ -107,8 +149,22 @@ def display_click_data(clickData):
         text = text + "Description: " + x.description + "\n"
         text = text + "Date de départ: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
         text = text + "Date de fin: " + x.astype(str).tail(1).reset_index().loc[0, 'end_date'] + "\n"
+    print(fig)
+    fig.for_each_trace(
+        lambda trace: trace.update(visible=False)
+    )
     return text
 
+@app.callback(
+    Output('delete-item-output', 'children'),
+    [Input('delete-item-button', 'clickData')])
+def delete_task_meeting(clickData):
+    Task.objects.first().delete()
+    return "Success delete"
+
+# Add CallBack
+def update_task_meeting(clickData):
+    pass
+
 def gantt(request):
-    update_gantt()
     return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': Task.objects.all().values(), 'meetings': Meeting.objects.all().values()})
