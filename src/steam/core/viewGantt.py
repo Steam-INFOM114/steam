@@ -94,7 +94,7 @@ def generate_data():
 
 # Update Gantt chart according to some event
 @app.callback(
-    Output('basic-interactions', 'figure'),
+    Output('graph', 'figure'),
     [Input('delete-item-output', 'children')]
 )
 def update_gantt(_):
@@ -103,8 +103,11 @@ def update_gantt(_):
 # Display the information of the selected item
 @app.callback(
     Output('click-data', 'children'),
-    Input('basic-interactions', 'clickData'))
+    Input('graph', 'clickData'))
 def display_click_data(clickData):
+    if clickData is None:
+        return ''
+
     df = pd.DataFrame(list(Task.objects.all().values()))
     x = df.loc[df['name'] == clickData['points'][0]['y']]
     if x.empty:
@@ -128,7 +131,7 @@ def display_click_data(clickData):
 @app.callback(
     Output('delete-item-output', 'children'),
     [Input('delete-item-button', 'n_clicks')],
-    [State('basic-interactions', 'clickData')])
+    [State('graph', 'clickData')])
 def delete_task_meeting(n_clicks, clickData):
     # TODO : delete according to id
     if n_clicks is not None and clickData is not None:
@@ -147,7 +150,7 @@ def update_task_meeting(clickData):
 # Create the layout of the page
 app.layout = html.Div([
     dcc.Graph(
-        id='basic-interactions',
+        id='graph',
         figure=generate_data(),
         config=config
     ),
