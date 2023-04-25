@@ -54,15 +54,15 @@
   <div class="card-header">
     <div style="display: flex; align-items: center;">
       <h2 style="margin: 0;">Projets</h2>
-      {% if user.is_authenticated %}
+      {% if user.is_staff %}
         <a href="{% url 'project-create' %}" class="btn btn-sm icon plus">
           <i class="bi bi-plus"></i>
         </a>
-        <!-- Bouton pour afficher le modal -->
-        <button class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#registerModal">
-          <i class="bi bi-pen"></i>
-        </button>
       {% endif %}
+      <!-- Bouton pour afficher le modal -->
+      <button class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#registerModal">
+        <i class="bi bi-pen"></i>
+      </button>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
