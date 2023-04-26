@@ -35,7 +35,6 @@ def generate_data():
 
     df = pd.concat([df,df2])
     df['id'] = df['id'].astype(str)
-    print(df)
 
     if not (df.empty):
         df.sort_values(by='end_date', inplace = True)
@@ -60,13 +59,7 @@ def generate_data():
                         text='name',
                       )
 
-    fig.for_each_trace(
-        lambda trace: trace.update(visible=True,marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0])) if trace.name == '1' else (),
-    )
 
-    fig.for_each_trace(
-        lambda trace: print(trace)
-    )
 
     #fig.update_traces(marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0]))
 
@@ -110,10 +103,10 @@ def display_click_data(clickData):
         return ''
 
     df = pd.DataFrame(list(Task.objects.all().values()))
-    x = df.loc[df['id'] == clickData['points'][0]['y']]
+    x = df.loc[df['id'] == int(clickData['points'][0]['y'])]
     if x.empty:
         df = pd.DataFrame(list(Meeting.objects.all().values()))
-        x = df.loc[df['id'] == clickData['points'][0]['y']]
+        x = df.loc[df['id'] == int(clickData['points'][0]['y'])]
         text = "Nom: " + x.name + "\n"
         text = text + "Description: " + x.description + "\n"
         text = text + "Date de la réunion: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
@@ -136,7 +129,7 @@ def display_click_data(clickData):
 def delete_task_meeting(n_clicks, clickData):
     # TODO : delete according to id
     if n_clicks is not None and clickData is not None:
-        id_clicked = clickData['points'][0]['y']
+        id_clicked = int(clickData['points'][0]['y'])
         task = Task.objects.get(id=id_clicked)
         if task:
             task.delete()
