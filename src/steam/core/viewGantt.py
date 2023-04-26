@@ -47,10 +47,16 @@ def generate_data():
 
     #create gantt figure
     global fig
-    fig = px.timeline(df, x_start="start_date", x_end="end_date", y="name", color="status", color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'}, hover_name="name",
-                             hover_data={'name':False,
-                                         'status':False
-                            })
+    fig = px.timeline(df,
+                      x_start="start_date",
+                      x_end="end_date",
+                      y="id",
+                      color="status",
+                      color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'},
+                      hover_name="name",
+                      hover_data={'name':False,'status':False},
+                      text='name',
+                      )
 
     fig.for_each_trace(
         lambda trace: trace.update(visible=True,marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0])) if trace.name == '1' else (),
@@ -62,8 +68,8 @@ def generate_data():
 
     #fig.update_traces(marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0]))
 
-    fig.update_yaxes(autorange="reversed")
-    fig.update_layout(clickmode='event+select', height=700, margin={'l': 0, 'b': 0, 'r': 0, 't': 30},yaxis_title=None,legend_title="")
+    fig.update_yaxes(autorange="reversed",visible=False)
+    fig.update_layout(clickmode='event+select', height=700, margin={'l': 0, 'b': 0, 'r': 0, 't': 30},legend_title="")
     fig.update_layout(
         hoverlabel=dict(
             bgcolor="white",
@@ -109,10 +115,10 @@ def display_click_data(clickData):
         return ''
 
     df = pd.DataFrame(list(Task.objects.all().values()))
-    x = df.loc[df['name'] == clickData['points'][0]['y']]
+    x = df.loc[df['id'] == clickData['points'][0]['y']]
     if x.empty:
         df = pd.DataFrame(list(Meeting.objects.all().values()))
-        x = df.loc[df['name'] == clickData['points'][0]['y']]
+        x = df.loc[df['id'] == clickData['points'][0]['y']]
         text = "Nom: " + x.name + "\n"
         text = text + "Description: " + x.description + "\n"
         text = text + "Date de la réunion: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
@@ -135,12 +141,12 @@ def display_click_data(clickData):
 def delete_task_meeting(n_clicks, clickData):
     # TODO : delete according to id
     if n_clicks is not None and clickData is not None:
-        name = clickData['points'][0]['y']
-        task = Task.objects.filter(name=name)
+        id_clicked = clickData['points'][0]['y']
+        task = Task.objects.get(id=id_clicked)
         if task:
             task.delete()
         else:
-            meeting = Meeting.objects.filter(name=name)
+            meeting = Meeting.objects.get(id=id_clicked)
             meeting.delete()
 
 # TODO : update the task or meeting when the update button is clicked
