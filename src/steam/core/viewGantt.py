@@ -59,8 +59,6 @@ def generate_data():
                         text='name',
                       )
 
-
-
     #fig.update_traces(marker=dict(opacity=[1,0.5,0.5,0.5,0,0,0,0]))
 
     fig.update_yaxes(autorange="reversed",visible=False)
