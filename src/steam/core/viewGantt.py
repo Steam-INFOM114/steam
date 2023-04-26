@@ -34,6 +34,8 @@ def generate_data():
         df2.at[i,'end_date'] = row.start_date + pd.Timedelta(days=1)
 
     df = pd.concat([df,df2])
+    df['id'] = df['id'].astype(str)
+    print(df)
 
     if not (df.empty):
         df.sort_values(by='end_date', inplace = True)
@@ -48,14 +50,14 @@ def generate_data():
     #create gantt figure
     global fig
     fig = px.timeline(df,
-                      x_start="start_date",
-                      x_end="end_date",
-                      y="id",
-                      color="status",
-                      color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'},
-                      hover_name="name",
-                      hover_data={'name':False,'status':False},
-                      text='name',
+                        x_start="start_date",
+                        x_end="end_date",
+                        color="status",
+                        y="id",
+                        color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'},
+                        hover_name="name",
+                        hover_data={'name':False,'status':False},
+                        text='name',
                       )
 
     fig.for_each_trace(
@@ -70,13 +72,6 @@ def generate_data():
 
     fig.update_yaxes(autorange="reversed",visible=False)
     fig.update_layout(clickmode='event+select', height=700, margin={'l': 0, 'b': 0, 'r': 0, 't': 30},legend_title="")
-    fig.update_layout(
-        hoverlabel=dict(
-            bgcolor="white",
-            font_size=16,
-            font_family="Rockwell"
-        )
-    )
 
     newnames = {'1':'À commencer', '2': 'En cours', '3': 'Terminé', 'Réunion': 'Réunion'}
     fig.for_each_trace(lambda t: t.update(name = newnames[t.name],
