@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Project, Task
+from .models import Project, Task, Resource
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
@@ -31,6 +31,12 @@ class ProjectForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'is_archived': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
+
+
+class ResourceForm(forms.ModelForm):
+    class Meta:
+        model = Resource
+        exclude = ['project']
 
 
 class TaskForm(forms.ModelForm):
@@ -85,4 +91,3 @@ class CustomUserCreationForm(UserCreationForm):
             self.fields['password2'].label = 'Confirmer le mot de passe'
             self.fields['password2'].widget.attrs['class'] = 'form-control'
             self.fields['password2'].widget.attrs['placeholder'] = 'Confirmer le mot de passe'
-

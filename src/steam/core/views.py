@@ -6,8 +6,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Project, Task
-from .forms import ProjectForm, TaskForm, CustomUserCreationForm
+from .models import Project, Task, Resource
+from .forms import ProjectForm, TaskForm, CustomUserCreationForm, ResourceForm
 from django.http import JsonResponse
 
 
@@ -77,6 +77,7 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         project = self.get_object()
         return self.request.user == project.owner
 
+
 class ProjectRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # get the project key from the form data
@@ -86,20 +87,35 @@ class ProjectRegisterView(LoginRequiredMixin, View):
             project = Project.objects.get(key=key)
         except Project.DoesNotExist:
             # if the project doesn't exist, show an error message
-            messages.error(request, 'Le projet avec la clé fournie n\'existe pas.', extra_tags='danger')
+            messages.error(
+                request, 'Le projet avec la clé fournie n\'existe pas.', extra_tags='danger')
             return redirect('project-list')
         else:
             if request.user in project.members.all() or request.user == project.owner:
-                messages.info(request, f'Vous êtes déjà inscrit au projet: {project.name}.')
+                messages.info(
+                    request, f'Vous êtes déjà inscrit au projet: {project.name}.')
             else:
                 # add the user to the project
                 project.members.add(request.user)
-                messages.success(request, f'Vous êtes désormais inscrit au projet: {project.name}.')
+                messages.success(
+                    request, f'Vous êtes désormais inscrit au projet: {project.name}.')
                 # TODO: rediriger vers la page gantt du projet
             return redirect('project-list')
 
     def get(self, request, *args, **kwargs):
         return JsonResponse({'error': 'GET method not allowed'}, status=405)
+
+
+class ResourceCreateView(CreateView):
+    model = Resource
+    form_class = ResourceForm
+    template_name = "resource/resource_create.html"
+    success_url = reverse_lazy('project-list')
+
+    def form_valid(self, form):
+        form.instance.project_id = self.kwargs['pk']
+        return super().form_valid(form)
+
 
 class TaskDetail(DetailView):
     model = Task

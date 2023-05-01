@@ -162,3 +162,4 @@ cython_debug/
 
 # misc
 .DS_Store
+/src/steam/resources
