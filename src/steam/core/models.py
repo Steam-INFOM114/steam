@@ -1,3 +1,4 @@
+import os
 import random
 import string
 from django.db import models
@@ -69,7 +70,11 @@ class Resource(models.Model):
     file = models.FileField(upload_to='resources/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_hidden = models.BooleanField(default=False)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='resources')
+
+    def get_file_extension(self):
+        _, ext = os.path.splitext(self.file.name)
+        return ext
 
 
 class Task(models.Model):

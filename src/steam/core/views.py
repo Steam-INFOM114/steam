@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
@@ -106,16 +106,40 @@ class ProjectRegisterView(LoginRequiredMixin, View):
         return JsonResponse({'error': 'GET method not allowed'}, status=405)
 
 
+class ResourceListView(ListView):
+    model = Resource
+    template_name = 'resource/resource_list.html'
+    context_object_name = 'resources'
+
+    def get_queryset(self):
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        queryset = super().get_queryset()
+        return queryset.filter(project=project, is_hidden=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        return context
+
+
 class ResourceCreateView(CreateView):
     model = Resource
     form_class = ResourceForm
     template_name = "resource/resource_create.html"
-    success_url = reverse_lazy('project-list')
 
     def form_valid(self, form):
         form.instance.project_id = self.kwargs['pk']
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse_lazy('project-resource-list', kwargs={'pk': self.kwargs['pk']})
+
+
+class ResourceDeleteView(LoginRequiredMixin, DeleteView):
+    model = Resource
+
+    def get_success_url(self):
+        return self.request.META.get('HTTP_REFERER') or reverse_lazy('project-list')
 
 class TaskDetail(DetailView):
     model = Task

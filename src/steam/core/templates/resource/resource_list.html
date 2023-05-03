@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block content %}
+<ul class="nav nav-tabs mt-4">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'project-detail' pk=pk %}">Détails</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Tâches</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Ressources</a>
+  </li>
+</ul>
+
+<div class="card mt-4 mb-4">
+  <div class="card-header">
+    <div style="display: flex; align-items: center;">
+      <h2 style="margin: 0;">Ressources</h2>
+      <a href="{% url 'resource-create' pk=pk %}" class="btn btn-sm icon plus">
+        <i class="bi bi-plus"></i>
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if  resources %}
+      <table id="resource-table" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Extension</th>
+            <th>Date d'ajout</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for resource in resources %}
+
+            {% include "resource/resource_delete.html" with resource=resource %}
+
+            <tr>
+              <td><a href="{{ resource.file.url }}">{{ resource.name }}</a></td>
+              <td>{{ resource.get_file_extension }}</td>
+              <td>{{ resource.uploaded_at|date:"d/m/Y" }}</td>
+              <td>
+                <a href="{{ resource.file.url }}" class="btn btn-success btn-sm"><i class="bi bi bi-eye"></i></a>
+                {% comment %} {% if user == project.owner %} {% endcomment %}
+                  {% comment %} <a href="{% url 'project-update' project.id %}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a> {% endcomment %}
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#resource{{ resource.id }}Modal">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                {% comment %} {% endif %} {% endcomment %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+    {% if not resources %}
+      <div class="text-center">
+        Aucune ressource trouvée.
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if resources %}
+  <script>
+    $(document).ready(function() {
+      $('#resource-table').DataTable({
+        "language": {
+          "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+        },
+      });
+    });
+  </script>
+
+  <style>
+    .icon {
+      color: #6D6A6A;
+      font-size: 17px;
+      transition: background-color 0.3s ease-in-out;
+      border: none;
+    }
+
+    .icon:hover {
+      background-color: #ccc;
+    }
+
+    .plus {
+      font-size: 30px;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      margin-bottom: 1px;
+      margin-left: 10px;
+    }
+
+    .plus i {
+      font-size: 24px;
+      vertical-align: 10px;
+    }
+  </style>
+{% endif %}
+{% endblock %}
