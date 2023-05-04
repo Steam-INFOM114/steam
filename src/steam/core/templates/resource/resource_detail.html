@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails de la ressource {{ resource.name }}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4 mb-4">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-xl-9">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h2>Détails de la ressource</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Nom</label>
+              <input class="form-control" type="text" value="{{ resource.name }}" rows="3" disabled readonly>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3" disabled readonly>{{ resource.description }}</textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Fichier</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text">Actuellement</span>
+              <div class="form-control d-flex h-auto">
+                <span class="text-break flex-grow-1">
+                  <a href="{{ resource.file.url }}">{{ resource.file.name }}</a>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="mb-3">
+              <input class="form-check-input checkboxinput" type="checkbox" value="" {% if resource.is_hidden %}checked{% endif %} rows="3" disabled readonly>
+              <label class="form-label">Cachée</label>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <a href="{% url 'resource-update' resource.id %}" class="btn btn-primary btn-lg">Modifier</a>
+            {% comment %} <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#project{{ project.id }}Modal">
+              Supprimer
+            </button> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

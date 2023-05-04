@@ -123,6 +123,18 @@ class ResourceListView(ListView):
         context['project'] = project
         return context
 
+class ResourceDetailView(UserPassesTestMixin, DetailView):
+    model = Resource
+    template_name = 'resource/resource_detail.html'
+    context_object_name = 'resource'
+
+    def test_func(self):
+        resource = self.get_object()
+        user = self.request.user
+        is_staff = user.is_authenticated and user.is_staff
+        is_owner = user.is_authenticated and user == resource.project.owner
+        return not resource.is_hidden or is_staff or is_owner
+
 
 class ResourceCreateView(CreateView):
     model = Resource

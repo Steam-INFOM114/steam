@@ -42,7 +42,7 @@
               <td>{{ resource.get_file_extension }}</td>
               <td>{{ resource.uploaded_at|date:"d/m/Y" }}</td>
               <td>
-                <a href="{{ resource.file.url }}" class="btn btn-success btn-sm"><i class="bi bi bi-eye"></i></a>
+                <a href="{% url 'resource-detail' resource.id %}" class="btn btn-success btn-sm"><i class="bi bi bi-eye"></i></a>
                 {% if user == project.owner or user.is_staff %}
                   {% comment %} Update {% endcomment %}
                   <a href="{% url 'resource-update' resource.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></a>
@@ -75,32 +75,33 @@
       });
     });
   </script>
-
-  <style>
-    .icon {
-      color: #6D6A6A;
-      font-size: 17px;
-      transition: background-color 0.3s ease-in-out;
-      border: none;
-    }
-
-    .icon:hover {
-      background-color: #ccc;
-    }
-
-    .plus {
-      font-size: 30px;
-      width: 32px;
-      height: 32px;
-      padding: 0;
-      margin-bottom: 1px;
-      margin-left: 10px;
-    }
-
-    .plus i {
-      font-size: 24px;
-      vertical-align: 10px;
-    }
-  </style>
 {% endif %}
+
+<style>
+  .icon {
+    color: #6D6A6A;
+    font-size: 17px;
+    transition: background-color 0.3s ease-in-out;
+    border: none;
+  }
+
+  .icon:hover {
+    background-color: #ccc;
+  }
+
+  .plus {
+    font-size: 30px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin-bottom: 1px;
+    margin-left: 10px;
+  }
+
+  .plus i {
+    font-size: 24px;
+    vertical-align: 10px;
+  }
+</style>
+
 {% endblock %}

@@ -37,6 +37,17 @@ class ResourceForm(forms.ModelForm):
     class Meta:
         model = Resource
         exclude = ['project']
+        labels = {
+            'name': 'Nom',
+            'description': 'Description',
+            'file': 'Fichier',
+            'is_hidden': 'Cachée'
+        }
+        widgets = {
+            # TODO: localization of placeholders
+            'name': forms.TextInput(attrs={'placeholder': 'Nom de la ressource'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Description de la ressource', 'rows': 3})
+        }
 
 
 class TaskForm(forms.ModelForm):
