@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, ResourceListView, ResourceCreateView, ResourceDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView, loginPage, logoutUser, registerPage
+from .views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, ResourceListView, ResourceCreateView, ResourceUpdateView, ResourceDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView, loginPage, logoutUser, registerPage
 
 
 urlpatterns = [
@@ -17,6 +17,8 @@ urlpatterns = [
          ResourceListView.as_view(), name='project-resource-list'),
     path('project/<int:pk>/resource/create/',
          ResourceCreateView.as_view(), name='resource-create'),
+    path('resource/<int:pk>/update/',
+         ResourceUpdateView.as_view(), name='resource-update'),
     path('resource/<int:pk>/delete/',
          ResourceDeleteView.as_view(), name='resource-delete'),
     path('project/register/', ProjectRegisterView.as_view(),

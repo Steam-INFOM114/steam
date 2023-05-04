@@ -118,14 +118,16 @@ class ResourceListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
         context['pk'] = self.kwargs['pk']
+        context['project'] = project
         return context
 
 
 class ResourceCreateView(CreateView):
     model = Resource
     form_class = ResourceForm
-    template_name = "resource/resource_create.html"
+    template_name = "resource/resource_form.html"
 
     def form_valid(self, form):
         form.instance.project_id = self.kwargs['pk']
@@ -135,11 +137,45 @@ class ResourceCreateView(CreateView):
         return reverse_lazy('project-resource-list', kwargs={'pk': self.kwargs['pk']})
 
 
-class ResourceDeleteView(LoginRequiredMixin, DeleteView):
+class ResourceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Resource
+    form_class = ResourceForm
+    template_name = 'resource/resource_form.html'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(ProjectUpdateView, self).get_context_data(**kwargs)
+    #     # TODO:
+    #     context['projects'] = User.objects.exclude(pk=self.request.user.pk)
+    #     return context
+    # TODO:
+    def test_func(self):
+        resource = self.get_object()
+        project = resource.project
+        user = self.request.user
+        return user == project.owner or \
+            user.is_staff
 
     def get_success_url(self):
-        return self.request.META.get('HTTP_REFERER') or reverse_lazy('project-list')
+        resource = self.get_object()
+        project_id = resource.project.id
+        return reverse_lazy('project-resource-list', kwargs={'pk': project_id})
+
+
+class ResourceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Resource
+
+    def test_func(self):
+        resource = self.get_object()
+        project = resource.project
+        user = self.request.user
+        return user == project.owner or \
+            user.is_staff
+
+    def get_success_url(self):
+        resource = self.get_object()
+        project_id = resource.project.id
+        return reverse_lazy('project-resource-list', kwargs={'pk': project_id})
+
 
 class TaskDetail(DetailView):
     model = Task
