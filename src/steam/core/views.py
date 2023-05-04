@@ -112,9 +112,19 @@ class ResourceListView(ListView):
     context_object_name = 'resources'
 
     def get_queryset(self):
+        user = self.request.user
         project = get_object_or_404(Project, pk=self.kwargs['pk'])
         queryset = super().get_queryset()
-        return queryset.filter(project=project, is_hidden=False)
+
+        is_staff = user.is_authenticated and user.is_staff
+        is_owner = user.is_authenticated and user == project.owner
+
+        if is_staff or is_owner:
+            queryset_filtered = queryset.filter(project=project)
+        else:
+            queryset_filtered = queryset.filter(
+                project=project, is_hidden=False)
+        return queryset_filtered
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -122,6 +132,7 @@ class ResourceListView(ListView):
         context['pk'] = self.kwargs['pk']
         context['project'] = project
         return context
+
 
 class ResourceDetailView(UserPassesTestMixin, DetailView):
     model = Resource
@@ -136,7 +147,7 @@ class ResourceDetailView(UserPassesTestMixin, DetailView):
         return not resource.is_hidden or is_staff or is_owner
 
 
-class ResourceCreateView(CreateView):
+class ResourceCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Resource
     form_class = ResourceForm
     template_name = "resource/resource_form.html"
@@ -144,6 +155,12 @@ class ResourceCreateView(CreateView):
     def form_valid(self, form):
         form.instance.project_id = self.kwargs['pk']
         return super().form_valid(form)
+
+    def test_func(self):
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        user = self.request.user
+        return user == project.owner or \
+            user.is_staff
 
     def get_success_url(self):
         return reverse_lazy('project-resource-list', kwargs={'pk': self.kwargs['pk']})
@@ -154,12 +171,6 @@ class ResourceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = ResourceForm
     template_name = 'resource/resource_form.html'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(ProjectUpdateView, self).get_context_data(**kwargs)
-    #     # TODO:
-    #     context['projects'] = User.objects.exclude(pk=self.request.user.pk)
-    #     return context
-    # TODO:
     def test_func(self):
         resource = self.get_object()
         project = resource.project
