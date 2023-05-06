@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from django.core.validators import RegexValidator, EmailValidator
+from django.core.validators import RegexValidator, EmailValidator, FileExtensionValidator
 from django.conf import settings
 
 
@@ -64,7 +64,10 @@ def disallow_owner_as_member(sender, **kwargs):
 class Resource(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    file = models.FileField(upload_to='resources/')
+    file = models.FileField(upload_to='resources/', validators=[
+            FileExtensionValidator(['jpg', 'png', 'pdf'],
+            message='Seuls les fichiers avec les extensions .txt, .pdf ou .docx sont autorisés.')
+        ])
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_hidden = models.BooleanField(default=False)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='resources')
