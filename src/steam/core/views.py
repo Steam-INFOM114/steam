@@ -102,7 +102,7 @@ class ProjectRegisterView(LoginRequiredMixin, View):
         return JsonResponse({'error': 'GET method not allowed'}, status=405)
 
 
-class ResourceListView(ListView):
+class ResourceListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Resource
     template_name = 'resource/resource_list.html'
     context_object_name = 'resources'
@@ -112,14 +112,18 @@ class ResourceListView(ListView):
         project = get_object_or_404(Project, pk=self.kwargs['pk'])
         queryset = super().get_queryset()
 
-        is_staff = user.is_authenticated and user.is_staff
-        is_owner = user.is_authenticated and user == project.owner
+        is_staff = user.is_staff
+        is_owner = user == project.owner
+        is_member = user in project.members.all()
 
         if is_staff or is_owner:
             queryset_filtered = queryset.filter(project=project)
-        else:
+        elif is_member:
             queryset_filtered = queryset.filter(
                 project=project, is_hidden=False)
+        else:
+            queryset_filtered = queryset.none()
+
         return queryset_filtered
 
     def get_context_data(self, **kwargs):
@@ -128,6 +132,14 @@ class ResourceListView(ListView):
         context['pk'] = self.kwargs['pk']
         context['project'] = project
         return context
+
+    def test_func(self):
+        user = self.request.user
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        is_staff = user.is_staff
+        is_owner = user == project.owner
+        is_member = user in project.members.all()
+        return is_staff or is_owner or is_member
 
 
 class ResourceDetailView(UserPassesTestMixin, DetailView):
