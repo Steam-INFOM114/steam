@@ -77,7 +77,6 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         project = self.get_object()
         return self.request.user == project.owner
 
-
 class ProjectRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # get the project key from the form data
@@ -87,18 +86,15 @@ class ProjectRegisterView(LoginRequiredMixin, View):
             project = Project.objects.get(key=key)
         except Project.DoesNotExist:
             # if the project doesn't exist, show an error message
-            messages.error(
-                request, 'Le projet avec la clé fournie n\'existe pas.', extra_tags='danger')
+            messages.error(request, 'Le projet avec la clé fournie n\'existe pas.', extra_tags='danger')
             return redirect('project-list')
         else:
             if request.user in project.members.all() or request.user == project.owner:
-                messages.info(
-                    request, f'Vous êtes déjà inscrit au projet: {project.name}.')
+                messages.info(request, f'Vous êtes déjà inscrit au projet: {project.name}.')
             else:
                 # add the user to the project
                 project.members.add(request.user)
-                messages.success(
-                    request, f'Vous êtes désormais inscrit au projet: {project.name}.')
+                messages.success(request, f'Vous êtes désormais inscrit au projet: {project.name}.')
                 # TODO: rediriger vers la page gantt du projet
             return redirect('project-list')
 

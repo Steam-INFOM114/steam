@@ -22,8 +22,7 @@ class Project(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_projects')
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name='projects', blank=True)
-    key = models.CharField(max_length=5, unique=True,
-                           default='', editable=False)
+    key = models.CharField(max_length=5, unique=True, default='', editable=False)
 
     def __str__(self):
         return self.name
@@ -48,11 +47,9 @@ class Project(models.Model):
     def generate_key(cls):
         """Generate a unique random string of 5 characters for the 'key' field in the 'Project' model."""
         while True:
-            generated_key = ''.join(random.choices(
-                string.ascii_uppercase + string.digits, k=5))
+            generated_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             if not cls.objects.filter(key=generated_key).exists():
                 return generated_key
-
 
 @receiver(m2m_changed, sender=Project.members.through)
 def disallow_owner_as_member(sender, **kwargs):
