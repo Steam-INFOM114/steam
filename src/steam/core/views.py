@@ -142,17 +142,20 @@ class ResourceListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return is_staff or is_owner or is_member
 
 
-class ResourceDetailView(UserPassesTestMixin, DetailView):
+class ResourceDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Resource
     template_name = 'resource/resource_detail.html'
     context_object_name = 'resource'
 
     def test_func(self):
-        resource = self.get_object()
         user = self.request.user
-        is_staff = user.is_authenticated and user.is_staff
-        is_owner = user.is_authenticated and user == resource.project.owner
-        return not resource.is_hidden or is_staff or is_owner
+        resource = self.get_object()
+        project = resource.project
+        is_staff = user.is_staff
+        is_owner = user == project.owner
+        is_member = user in project.members.all()
+
+        return (is_member and not resource.is_hidden) or is_staff or is_owner
 
 
 class ResourceCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
