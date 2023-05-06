@@ -44,10 +44,7 @@
           </div>
           <div class="d-grid gap-2">
             {% if user.is_staff or user == resource.project.owner %}
-              <a href="{% url 'resource-update' resource.id %}" class="btn btn-primary btn-lg">Modifier</a>
-              {% comment %} <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#project{{ project.id }}Modal">
-                Supprimer
-              </button> {% endcomment %}
+              <a href="{% url 'resource-update' resource.id %}" class="btn btn-primary">Modifier</a>
             {% endif %}
           </div>
         </div>
