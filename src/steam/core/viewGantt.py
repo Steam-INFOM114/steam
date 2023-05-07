@@ -96,9 +96,6 @@ def generate_data():
     Input('task-form-output', 'children'),
     Input('meeting-form-output', 'children'))
 def update_gantt(*args,**kwargs):
-    da = kwargs['callback_context']
-    triggered = da.triggered[0]['prop_id']
-    print(triggered)
     return generate_data()
 
 # Display the information of the selected item
@@ -246,11 +243,11 @@ def get_string_statut_id(x):
 @app.callback(
     Output('task-form-output', 'children'),
     Input('validate1-update-button', 'n_clicks'),
-    Input('input1', 'value'),
-    Input('textarea1', 'value'),
-    Input('startdate', 'date'),
-    Input('enddate', 'date'),
-    Input('statut-field1', 'value'),
+    State('input1', 'value'),
+    State('textarea1', 'value'),
+    State('startdate', 'date'),
+    State('enddate', 'date'),
+    State('statut-field1', 'value'),
     State('graph', 'clickData'))
 def validate_update_task(*args,**kwargs):
     da = kwargs['callback_context']
@@ -272,9 +269,9 @@ def validate_update_task(*args,**kwargs):
 @app.callback(
     Output('meeting-form-output', 'children'),
     Input('validate2-update-button', 'n_clicks'),
-    Input('input2', 'value'),
-    Input('textarea2', 'value'),
-    Input('date', 'date'),
+    State('input2', 'value'),
+    State('textarea2', 'value'),
+    State('date', 'date'),
     State('graph', 'clickData'))
 def validate_update_meeting(*args,**kwargs):
     da = kwargs['callback_context']
