@@ -1,0 +1,21 @@
+<!-- Deletion confirmation modal -->
+<div class="modal fade" id="resource{{ resource.id }}Modal" tabindex="-1" aria-labelledby="resource{{ resource.id }}ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="resource{{ resource.id }}ModalLabel">Supprimer {{ resource.name }}</h1>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer la ressource nommée <b>{{ resource.name }}</b>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+        <form method="post" action="{% url 'resource-delete' resource.id %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

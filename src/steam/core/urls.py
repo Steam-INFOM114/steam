@@ -1,6 +1,6 @@
 from django.urls import path
 from . import viewGantt
-from .views import MeetingCreate, MeetingUpdate, MeetingDeleteView, ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskDeleteView, loginPage, logoutUser, registerPage
+from .views import MeetingCreate, MeetingUpdate, MeetingDeleteView, ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskDeleteView, ResourceDetailView, ResourceCreateView, ResourceUpdateView, ResourceDeleteView, ResourceListView, loginPage, logoutUser, registerPage
 
 
 urlpatterns = [
@@ -15,6 +15,17 @@ urlpatterns = [
     path('project/<int:pk>/delete/',
          ProjectDeleteView.as_view(), name='project-delete'),
     path('project/register/', ProjectRegisterView.as_view(), name='project-register'),
+    path('project/<int:pk>/resources/',
+         ResourceListView.as_view(), name='project-resource-list'),
+    path('project/<int:pk>/resource/create/',
+         ResourceCreateView.as_view(), name='resource-create'),
+    path('resource/<int:pk>/', ResourceDetailView.as_view(), name='resource-detail'),
+    path('resource/<int:pk>/update/',
+         ResourceUpdateView.as_view(), name='resource-update'),
+    path('resource/<int:pk>/delete/',
+         ResourceDeleteView.as_view(), name='resource-delete'),
+    path('project/register/', ProjectRegisterView.as_view(),
+         name='project-register'),
     path('tasks/', viewGantt.gantt, name='task-list'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
     path('task/create/', TaskCreate.as_view(), name='task-create'),
