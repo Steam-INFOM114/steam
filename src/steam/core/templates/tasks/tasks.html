@@ -1,11 +1,52 @@
 {% extends "base.html" %}
+
+{% block title %}Tâches et meetings du projet {{ project.name }}{% endblock %}
+
 {% block content %}
 
-<a href="{% url 'task-create' %}" class="btn btn-primary btn-md active" role="button" aria-pressed="true">Ajouter une tâche</a>
-<a href="{% url 'meeting-create' %}" class="btn btn-primary btn-md active" role="button" aria-pressed="true">Ajouter une réunion</a>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs mt-4">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'project-detail' pk=project.pk %}">Détails</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Tâches et meetings</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'project-resource-list' pk=project.pk %}">Ressources</a>
+  </li>
+</ul>
 
-{% load plotly_dash %}
 
-{% plotly_app name='SimpleExample' ratio=2%}
+<div class="card mt-4 mb-4">
+  <div class="card-header">
+    <div style="display: flex; align-items: center;">
+        <h2>Tâches et meetings du projet {{ project.name }}</h2>
+      </div>
+  </div>
+  <div class="card-body">
+    <div class="d-grid gap-2">
+
+      {% if tasks or meetings %}
+      {% load plotly_dash %}
+      {% plotly_app name='SimpleExample' ratio=0.65%}
+      {% else %}
+      <div class="text-center">
+        Aucune tâche ou réunion n'a été créée pour ce projet.
+      </div>
+      <br>
+      {% endif %}
+      <div class="d-grid gap-2">
+        <a href="{% url 'task-create' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">Ajouter une tâche</a>
+        <a href="{% url 'meeting-create' %}" class="btn btn-secondary" role="button" aria-pressed="true">Ajouter une réunion</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="card-body">
+</div>
+
 
 {% endblock %}

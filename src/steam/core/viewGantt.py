@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from dash import dcc, html
 import plotly.express as px
 from dash.dependencies import Input, Output, State
 import pandas as pd
-from .models import Task, Meeting
+from .models import Task, Meeting, Project
 from django.utils import timezone
 from datetime import date, datetime
 from django_plotly_dash import DjangoDash
@@ -353,5 +353,12 @@ app.layout = html.Div([
 ])
 
 # View to display the gantt chart
-def gantt(request):
-    return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': Task.objects.all().values(), 'meetings': Meeting.objects.all().values()})
+def gantt(request, **kwargs):
+    # Filter the tasks and meetings based on the project id
+    tasks = Task.objects.filter(project_id=kwargs['pk'])
+    meetings = Meeting.objects.filter(project_id=kwargs['pk'])
+
+    # Get the project or 404
+    project = get_object_or_404(Project, pk=kwargs['pk'])
+
+    return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': tasks, 'meetings': meetings, 'project': project})

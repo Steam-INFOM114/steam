@@ -26,6 +26,7 @@ urlpatterns = [
          ResourceDeleteView.as_view(), name='resource-delete'),
     path('project/register/', ProjectRegisterView.as_view(),
          name='project-register'),
+    path('project/<int:pk>/tasks/', viewGantt.gantt, name='project-task-list'),
     path('tasks/', viewGantt.gantt, name='task-list'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
     path('task/create/', TaskCreate.as_view(), name='task-create'),

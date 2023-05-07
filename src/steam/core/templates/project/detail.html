@@ -10,7 +10,7 @@
     <a class="nav-link active" aria-current="page" href="#">Détails</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Tâches</a>
+    <a class="nav-link" href="{% url 'project-task-list' pk=project.pk %}">Tâches et meetings</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="{% url 'project-resource-list' pk=project.pk %}">Ressources</a>
