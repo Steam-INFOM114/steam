@@ -1,3 +1,4 @@
+import os
 import random
 import string
 from django.db import models
@@ -5,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from django.core.validators import RegexValidator, EmailValidator
+from django.core.validators import RegexValidator, EmailValidator, FileExtensionValidator
 from django.conf import settings
 
 
@@ -58,6 +59,22 @@ def disallow_owner_as_member(sender, **kwargs):
         new_members = kwargs.get('pk_set', [])
         if owner.pk in new_members:
             raise ValidationError("Owner cannot be added as a member.")
+
+
+class Resource(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    file = models.FileField(upload_to='resources/', validators=[
+            FileExtensionValidator(['jpg', 'png', 'pdf'],
+            message='Seuls les fichiers avec les extensions .txt, .pdf ou .docx sont autorisés.')
+        ])
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    is_hidden = models.BooleanField(default=False)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='resources')
+
+    def get_file_extension(self):
+        _, ext = os.path.splitext(self.file.name)
+        return ext
 
 
 class Task(models.Model):
