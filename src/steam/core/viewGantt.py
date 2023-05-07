@@ -1,17 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from dash import dcc, html
 import plotly.express as px
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import pandas as pd
 from .models import Task, Meeting, Project
 from django.utils import timezone
-from datetime import date, datetime
+from datetime import datetime
 from django_plotly_dash import DjangoDash
 import numpy as np
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = DjangoDash('SimpleExample')   # replaces dash.Dash
+app = DjangoDash('SteamGantt',external_stylesheets=[dbc.themes.BOOTSTRAP])   # replaces dash.Dash
 
 styles = {
     'pre': {
@@ -129,8 +128,7 @@ def display_click_data(clickData,a,b,c,stateData):
 
 # Hide delete button before click
 @app.callback(
-    Output('delete-item-button', component_property='style'),
-    Output('update-item-button', component_property='style'),
+    Output('item-button', component_property='style'),
     Output('click-data', component_property='style'),
     Input('graph', 'clickData'),
     Input('update-item-button', 'n_clicks'),
@@ -141,9 +139,9 @@ def display_click_data(*args,**kwargs):
     if da.triggered != []:
         triggered = da.triggered[0]['prop_id']
         if triggered == 'update-item-button.n_clicks':
-            return [{'display':'none'},{'display':'none'},{'display':'none'}]
+            return [{'display':'none'},{'display':'none'}]
         elif triggered == 'graph.clickData' or triggered == 'validate2-update-button.n_clicks' or triggered == 'validate1-update-button.n_clicks':
-            return [{'display':'inline'},{'display':'inline'},styles['pre']]
+            return [{'display':'inline'},styles['pre']]
 
 #call back to delete a task or a meeting
 @app.callback(
@@ -288,11 +286,15 @@ def validate_update_meeting(*args,**kwargs):
             meeting.save()
 
 # Create the layout of the page
-app.layout = html.Div([
-    dcc.Graph(
-        id='graph',
-        figure=generate_data(),
-        config=config
+app.layout = dbc.Container([
+    dbc.Card([
+        dbc.CardBody([
+            dcc.Graph(
+                id='graph',
+                figure=generate_data(),
+                config=config
+            ),
+        ])]
     ),
 
     html.Div([
@@ -301,54 +303,64 @@ app.layout = html.Div([
 
     # delete button and update button
     html.Div([
-        html.Button("Supprimer", id='delete-item-button', hidden = True ),
-        html.Button("Modifier", id='update-item-button', hidden = True ),
-        html.Div(id='item-output')
-    ]),
-    html.Br(),
+        dbc.Button("Modifier", color="primary", className="me-1", id='update-item-button'),
+        dbc.Button("Supprimer", color="danger", className="me-1", id='delete-item-button'),
+    ],id='item-button', style= {'display':'none'}),
+    html.Div(id='item-output'),
     # the form for the tasks updates
-    html.Div([
-        html.Span('Nom :',id="nom1"),
-        html.Br(id="br1"),
-        dcc.Input(id="input1", type="text", placeholder="", debounce=True),
-        html.Br(id="br2"),
-        html.Span('Description :',id="description1"),
-        html.Br(id="br3"),
-        dcc.Textarea(id='textarea1',style={'width': '50%', 'height': 100}),
-        html.Br(id="br4"),
-        html.Span('Date de début :',id="date-debut1"),
-        html.Br(id="br5"),
-        dcc.DatePickerSingle(id='startdate', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
-        html.Br(id="br6"),
-        html.Span('Date de fin :',id="date-fin1"),
-        html.Br(id="br7"),
-        dcc.DatePickerSingle(id='enddate', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
-        html.Br(id="br8"),
-        html.Span('Status :',id="statut1"),
-        html.Br(id="br9"),
-        html.Div([dcc.Dropdown(options=['À commencer', 'En cours', 'Terminé'],style={"width": "50%"},id='statut-field1')],id='statut-field1-div'),
-        html.Br(id="br10"),
-        html.Button("Valider", id="validate1-update-button"),
-    ],id='task-form', style= {'display':'none'}),
+    html.Div(
+        dbc.Card([
+            dbc.CardHeader("Modifier la tâche sélectionnée"),
+            dbc.CardBody([
+                html.Span('Nom*',id="nom1"),
+                html.Br(),
+                dbc.Input(id="input1", type="text", placeholder="", debounce=True),
+                html.Br(),
+                html.Span('Description',id="description1"),
+                html.Br(),
+                dbc.Textarea(id='textarea1',style={'height': 100}),
+                html.Br(),
+                html.Span('Date de début*',id="date-debut1"),
+                html.Br(),
+                html.Div([dcc.DatePickerSingle(id='startdate', month_format='MMM Do, YY', placeholder='MMM Do, YY')], className="dash-bootstrap"),
+                html.Br(),
+                html.Span('Date de fin*',id="date-fin1"),
+                html.Br(),
+                dcc.DatePickerSingle(id='enddate', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
+                html.Br(),
+                html.Br(),
+                html.Span('Status*',id="statut1"),
+                html.Br(),
+                html.Div([dbc.Select(options=['À commencer', 'En cours', 'Terminé'],id='statut-field1')],id='statut-field1-div'),
+                html.Br(),
+                dbc.Button("Valider", id="validate1-update-button", color="primary", className="me-1"),
+                ])]
+        ),id='task-form', style= {'display':'none'}
+    ),
     html.Div(id='task-form-output'),
 
     # the form for the meetings updates
-    html.Div([
-        html.Span('Nom :',id="nom2"),
-        html.Br(),
-        dcc.Input(id="input2", type="text", placeholder="", debounce=True),
-        html.Br(),
-        html.Span('Description :',id="description2"),
-        html.Br(),
-        dcc.Textarea(id='textarea2',style={'width': '50%', 'height': 100}),
-        html.Br(),
-        html.Span('Date :',id="date2"),
-        html.Br(),
-        dcc.DatePickerSingle(id='date', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
-        html.Br(),
-        html.Br(),
-        html.Button("Valider", id="validate2-update-button"),
-    ],id='meeting-form', style= {'display':'none'}),
+    html.Div(
+        dbc.Card([
+            dbc.CardHeader("Modifier la réunion sélectionnée"),
+            dbc.CardBody([
+                html.Span('Nom*',id="nom2"),
+                html.Br(),
+                dbc.Input(id="input2", type="text", placeholder="", debounce=True),
+                html.Br(),
+                html.Span('Description',id="description2"),
+                html.Br(),
+                dbc.Textarea(id='textarea2',style={'height': 100}),
+                html.Br(),
+                html.Span('Date*',id="date2"),
+                html.Br(),
+                dcc.DatePickerSingle(id='date', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
+                html.Br(),
+                html.Br(),
+                dbc.Button("Valider", id="validate2-update-button", color="primary", className="me-1"),
+                ])]
+        ),id='meeting-form', style= {'display':'none'}
+    ),
     html.Div(id='meeting-form-output'),
 ])
 
