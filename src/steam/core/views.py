@@ -6,8 +6,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Project, Task
-from .forms import ProjectForm, TaskForm, CustomUserCreationForm
+from .models import Project, Task, Meeting
+from .forms import ProjectForm, TaskForm, CustomUserCreationForm, MeetingForm
 from django.http import JsonResponse
 
 
@@ -106,19 +106,11 @@ class TaskDetail(DetailView):
     context_object_name = 'task'
     template_name = "tasks/task.html"
 
-
-class TaskList(ListView):
-    model = Task
-    context_object_name = 'tasks'
-    template_name = "tasks/tasks.html"
-
-
 class TaskCreate(CreateView):
     model = Task
     form_class = TaskForm
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('task-list')
-
 
 class TaskUpdate(UpdateView):
     model = Task
@@ -126,11 +118,25 @@ class TaskUpdate(UpdateView):
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('task-list')
 
+class MeetingUpdate(UpdateView):
+    model = Meeting
+    form_class = MeetingForm
+    template_name = "tasks/task_form.html"
+    success_url = reverse_lazy('task-list')
 
 class TaskDeleteView(DeleteView):
     model = Task
     success_url = reverse_lazy('task-list')
 
+class MeetingDeleteView(DeleteView):
+    model = Meeting
+    success_url = reverse_lazy('task-list')
+
+class MeetingCreate(CreateView):
+    model = Meeting
+    form_class = MeetingForm
+    template_name = "tasks/task_form.html"
+    success_url = reverse_lazy('task-list')
 
 def loginPage(request):
     if request.user.is_authenticated:

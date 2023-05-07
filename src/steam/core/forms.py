@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Project, Task
+from .models import Project, Task, Meeting
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
@@ -53,6 +53,22 @@ class TaskForm(forms.ModelForm):
             'project': forms.Select(attrs={'class': 'form-select'})
         }
 
+class MeetingForm(forms.ModelForm):
+    class Meta:
+        model = Meeting
+        fields = ['name','description','start_date','project']
+        labels = {
+            'name': 'Nom',
+            'description': 'Description',
+            'start_date': 'Date de la réunion',
+            'project': 'Projet'
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Nom de la réunion', 'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Description de la réunion', 'class': 'form-control', 'rows': 3}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'project': forms.Select(attrs={'class': 'form-select'}),
+        }
 
 class CustomUserCreationForm(UserCreationForm):
 

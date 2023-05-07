@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView, loginPage, logoutUser, registerPage
+from . import viewGantt
+from .views import MeetingCreate, MeetingUpdate, MeetingDeleteView, ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskDeleteView, loginPage, logoutUser, registerPage
 
 
 urlpatterns = [
@@ -14,9 +15,12 @@ urlpatterns = [
     path('project/<int:pk>/delete/',
          ProjectDeleteView.as_view(), name='project-delete'),
     path('project/register/', ProjectRegisterView.as_view(), name='project-register'),
-    path('tasks/', TaskList.as_view(), name='task-list'),
+    path('tasks/', viewGantt.gantt, name='task-list'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
     path('task/create/', TaskCreate.as_view(), name='task-create'),
+    path('task/createM/', MeetingCreate.as_view(), name='meeting-create'),
     path('task/<int:pk>/update/', TaskUpdate.as_view(), name='task-update'),
+    path('task/<int:pk>/updateM/', MeetingUpdate.as_view(), name='meeting-update'),
     path('task/<int:pk>/delete/', TaskDeleteView.as_view(), name='task-delete'),
+    path('task/<int:pk>/deleteM/', MeetingDeleteView.as_view(), name='meeting-delete'),
 ]
