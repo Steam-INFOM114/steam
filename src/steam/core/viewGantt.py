@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from dash import dcc, html
 import plotly.express as px
 from dash.dependencies import Input, Output, State
@@ -354,6 +354,14 @@ app.layout = html.Div([
 
 # View to display the gantt chart
 def gantt(request, **kwargs):
+    # Check that the user is logged in
+    if not request.user.is_authenticated:
+        return redirect('login')
+    # Check that the user is a member of the project or the owner
+    if not Project.objects.filter(id=kwargs['pk'], members=request.user).exists() \
+        and not Project.objects.filter(id=kwargs['pk'], owner=request.user).exists():
+        return redirect('projects')
+
     # Filter the tasks and meetings based on the project id
     tasks = Task.objects.filter(project_id=kwargs['pk'])
     meetings = Meeting.objects.filter(project_id=kwargs['pk'])
