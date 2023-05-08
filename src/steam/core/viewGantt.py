@@ -4,6 +4,7 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import pandas as pd
+from textwrap import wrap
 from .models import Task, Meeting, Project
 from django.utils import timezone
 from datetime import datetime
@@ -118,19 +119,30 @@ def update_gantt(*args,**kwargs):
 def display_click_data(clickData,a,b,c,stateData):
     if clickData is None:
         return ''
+    df = pd.DataFrame(list(Task.objects.all().values()))
+    x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
     if clickData['points'][0]['customdata'][1] == 'Réunion':
         df = pd.DataFrame(list(Meeting.objects.all().values()))
         x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
-        text = "Nom: " + x.name + "\n"
-        text = text + "Description: " + x.description + "\n"
-        text = text + "Date de la réunion: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
+        text = html.Div([
+            html.Label('Nom:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P(x.name),
+            html.Label('Description:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P("\n".join(wrap(x.description.iloc[0], 140))),
+            html.Label('Date de la réunion:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P(datetime.strptime(clickData['points'][0]['base'],'%Y-%m-%d').strftime('%d/%m/%y'), '%d/%m/%y'),
+        ])
     else:
-        df = pd.DataFrame(list(Task.objects.all().values()))
-        x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
-        text = "Nom: " + x.name + "\n"
-        text = text + "Description: " + x.description + "\n"
-        text = text + "Date de départ: " + x.astype(str).tail(1).reset_index().loc[0, 'start_date'] + "\n"
-        text = text + "Date de fin: " + x.astype(str).tail(1).reset_index().loc[0, 'end_date'] + "\n"
+        text = html.Div([
+            html.Label('Nom:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P(x.name),
+            html.Label('Description:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P("\n".join(wrap(x.description.iloc[0], 140))),
+            html.Label('Date de début:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P(datetime.strptime(clickData['points'][0]['base'],'%Y-%m-%d').strftime('%d/%m/%y'), '%d/%m/%y'),
+            html.Label('Date de fin:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
+            html.P(datetime.strptime(clickData['points'][0]['x'],'%Y-%m-%d').strftime('%d/%m/%y'), '%d/%m/%y'),
+        ])
     fig.for_each_trace(
         lambda trace: trace.update(visible=False)
     )
@@ -391,6 +403,7 @@ def gantt(request, **kwargs):
     # Check that the user is logged in
     if not request.user.is_authenticated:
         return redirect('login')
+
     # Check that the user is a member of the project or the owner
     if not Project.objects.filter(id=kwargs['pk'], members=request.user).exists() \
         and not Project.objects.filter(id=kwargs['pk'], owner=request.user).exists():
