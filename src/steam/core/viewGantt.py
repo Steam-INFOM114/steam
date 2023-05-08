@@ -61,12 +61,20 @@ def generate_data():
                         y="index",
                         color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'},
                         hover_name="name",
-                        hover_data={'name':False,'status':False,'id':False},
+                        hover_data={'name':False,'status':False,'id':False,'index':False},
                         text='name',
                       )
 
     fig.update_yaxes(autorange="reversed",visible=False)
     fig.update_layout(clickmode='event+select', height=700, margin={'l': 0, 'b': 0, 'r': 0, 't': 30},legend_title="")
+
+    fig.update_layout(
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=16,
+            font_family="Rockwell"
+        )
+    )
 
     newnames = {'1':'À commencer', '2': 'En cours', '3': 'Terminé', 'Réunion': 'Réunion'}
     fig.for_each_trace(lambda t: t.update(name = newnames[t.name],
@@ -93,7 +101,9 @@ def generate_data():
     Output('graph', 'figure'),
     Input('item-output', 'children'),
     Input('task-form-output', 'children'),
-    Input('meeting-form-output', 'children'))
+    Input('meeting-form-output', 'children'),
+    State('click-data', 'children'),
+    State('graph', 'clickData'))
 def update_gantt(*args,**kwargs):
     return generate_data()
 
@@ -126,6 +136,13 @@ def display_click_data(clickData,a,b,c,stateData):
     )
     return text
 
+@app.callback(
+    Output('graph', 'clickData'),
+    Input('validate2-update-button', 'n_clicks'),
+    Input('validate1-update-button', 'n_clicks'))
+def display_click_data(*args,**kwargs):
+    return None
+
 # Hide delete button before click
 @app.callback(
     Output('item-button', component_property='style'),
@@ -138,10 +155,13 @@ def display_click_data(*args,**kwargs):
     da = kwargs['callback_context']
     if da.triggered != []:
         triggered = da.triggered[0]['prop_id']
-        if triggered == 'update-item-button.n_clicks':
-            return [{'display':'none'},{'display':'none'}]
-        elif triggered == 'graph.clickData' or triggered == 'validate2-update-button.n_clicks' or triggered == 'validate1-update-button.n_clicks':
-            return [{'display':'inline'},styles['pre']]
+        if triggered == 'graph.clickData':
+            if args[0] == None:
+                return [{'display':'none'},styles['pre']]
+            else:
+                return [{'display':'inline'},styles['pre']]
+        elif triggered == 'validate2-update-button.n_clicks' or triggered == 'validate1-update-button.n_clicks':
+            return [{'display':'none'},styles['pre']]
     return [{'display':'none'},{'display':'none'}]
 
 #call back to delete a task or a meeting
@@ -183,8 +203,6 @@ def hide_show_form_title(*args,**kwargs):
                 return [{'display':'inline'},{'display':'none'}]
             else:
                 return [{'display':'none'},{'display':'inline'}]
-        elif triggered == 'graph.clickData' or triggered == 'validate2-update-button.n_clicks' or triggered == 'validate1-update-button.n_clicks':
-            return [{'display':'none'},{'display':'none'}]
     return [{'display':'none'},{'display':'none'}]
 
 # fill form with current values of a task/meeting
