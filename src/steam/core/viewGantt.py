@@ -142,6 +142,7 @@ def display_click_data(*args,**kwargs):
             return [{'display':'none'},{'display':'none'}]
         elif triggered == 'graph.clickData' or triggered == 'validate2-update-button.n_clicks' or triggered == 'validate1-update-button.n_clicks':
             return [{'display':'inline'},styles['pre']]
+    return [{'display':'none'},{'display':'none'}]
 
 #call back to delete a task or a meeting
 @app.callback(
@@ -184,6 +185,7 @@ def hide_show_form_title(*args,**kwargs):
                 return [{'display':'none'},{'display':'inline'}]
         elif triggered == 'graph.clickData' or triggered == 'validate2-update-button.n_clicks' or triggered == 'validate1-update-button.n_clicks':
             return [{'display':'none'},{'display':'none'}]
+    return [{'display':'none'},{'display':'none'}]
 
 # fill form with current values of a task/meeting
 @app.callback(
@@ -216,6 +218,7 @@ def modify_placeholder(*args,**kwargs):
                 str_date = x.astype(str).tail(1).reset_index().loc[0, 'start_date']
                 date = datetime.strptime(str_date, '%Y-%m-%d')
                 return ["","",None,None,None,x.name,x.description,date.date()]
+    return [None,None,None,None,None,None,None,None]
 
 # get the correponding label status based on the id of the status
 def get_string_statut_name(x):
