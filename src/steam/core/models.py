@@ -1,3 +1,5 @@
+import random
+import string
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -19,6 +21,7 @@ class Project(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_projects')
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name='projects', blank=True)
+    key = models.CharField(max_length=5, unique=True, default='', editable=False)
 
     def __str__(self):
         return self.name
@@ -34,9 +37,18 @@ class Project(models.Model):
 
     # clean() is not automatically called when an object is saved, hence the overriding of save()
     def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = self.generate_key()
         self.full_clean()
-        return super(Project, self).save(*args, **kwargs)
+        super(Project, self).save(*args, **kwargs)
 
+    @classmethod
+    def generate_key(cls):
+        """Generate a unique random string of 5 characters for the 'key' field in the 'Project' model."""
+        while True:
+            generated_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if not cls.objects.filter(key=generated_key).exists():
+                return generated_key
 
 @receiver(m2m_changed, sender=Project.members.through)
 def disallow_owner_as_member(sender, **kwargs):
@@ -85,7 +97,8 @@ class Task(models.Model):
 
 class MyUser(AbstractUser):
     email = models.EmailField(validators=[EmailValidator(
-        message="Please enter a valid email address.")])
+        message="Please enter a valid email address.")],
+        unique=True)
 
     def save(self, *args, **kwargs):
         self.full_clean()

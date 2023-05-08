@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -9,6 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import Http404
 from .models import Project, Task
 from .forms import ProjectForm, TaskForm, CustomUserCreationForm
+from django.http import JsonResponse
 
 
 User = get_user_model()
@@ -77,6 +78,29 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         project = self.get_object()
         return self.request.user == project.owner
 
+class ProjectRegisterView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        # get the project key from the form data
+        key = request.POST.get('key')
+        try:
+            # try to get the project with the provided key
+            project = Project.objects.get(key=key)
+        except Project.DoesNotExist:
+            # if the project doesn't exist, show an error message
+            messages.error(request, 'Le projet avec la clé fournie n\'existe pas.', extra_tags='danger')
+            return redirect('project-list')
+        else:
+            if request.user in project.members.all() or request.user == project.owner:
+                messages.info(request, f'Vous êtes déjà inscrit au projet: {project.name}.')
+            else:
+                # add the user to the project
+                project.members.add(request.user)
+                messages.success(request, f'Vous êtes désormais inscrit au projet: {project.name}.')
+                # TODO: rediriger vers la page gantt du projet
+            return redirect('project-list')
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({'error': 'GET method not allowed'}, status=405)
 
 class TaskDetail(DetailView):
     model = Task

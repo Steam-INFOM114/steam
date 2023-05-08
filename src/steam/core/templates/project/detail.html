@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}Project details{% endblock %}
+{% block title %}Détails du projet {{ project.name }}{% endblock %}
+
+{% load crispy_forms_tags %}
 
 {% block content %}
 {% with list_id="members_group_list" %}
@@ -8,71 +10,50 @@
   <div class="row d-flex justify-content-center align-items-center h-100">
     <div class="col-xl-9">
       <div class="card">
-        <div class="card-header">
-          <h2>Project details</h2>
+        <div class="card-header d-flex justify-content-between">
+          <h2>Détails du projet</h2>
+          <h6>Clef : {{project.key}}</h6>
         </div>
         <div class="card-body">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">Name</h6>
-            </div>
-            <div class="col-md-9 pe-5">
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Nom</label>
               <input class="form-control" type="text" value="{{ project.name }}" rows="3" disabled readonly>
             </div>
           </div>
-          <hr class="mx-n3">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">Description</h6>
-            </div>
-            <div class="col-md-9 pe-5">
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Description</label>
               <textarea class="form-control" rows="3" disabled readonly>{{ project.description }}</textarea>
             </div>
           </div>
-          <hr class="mx-n3">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">Start date</h6>
-            </div>
-            <div class="col-md-9 pe-5">
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Date de début</label>
               <input type="date" class="form-control" value="{{ project.start_date|date:'Y-m-d' }}" disabled readonly/>
             </div>
           </div>
-          <hr class="mx-n3">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">End date</h6>
-            </div>
-            <div class="col-md-9 pe-5">
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Date de fin</label>
               <input type="date" class="form-control" value="{{ project.end_date|date:'Y-m-d' }}" disabled readonly/>
             </div>
           </div>
-          <hr class="mx-n3">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">Archived</h6>
-            </div>
-            <div class="col-md-9 pe-5">
-              <input class="form-check-input" type="checkbox" value="" {% if project.is_archived %}checked{% endif %} disabled readonly>
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Responsable</label>
+              <input class="form-control" type="text" value="{{ project.owner }}" rows="3" disabled readonly>
             </div>
           </div>
-          <hr class="mx-n3">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">Owner</h6>
-            </div>
-            <div class="col-md-9 pe-5">
-              <select class="form-select" disabled readonly>
-                <option selected>{{ project.owner.username }}</option>
-              </select>
+          <div class="form-group">
+            <div class="mb-3">
+              <input class="form-check-input checkboxinput" type="checkbox" value="" {% if project.is_archived %}checked{% endif %} rows="3" disabled readonly>
+              <label class="form-label">Archivé</label>
             </div>
           </div>
-          <hr class="mx-n3">
-          <div class="row align-items-center py-3">
-            <div class="col-md-3 ps-5">
-              <h6 class="mb-0">Members</h6>
-            </div>
-            <div class="col-md-9 pe-5">
+          <div class="form-group">
+            <div class="mb-3">
+              <label class="form-label">Membres</label>
               {% if project.members.all %}
                 <input type="text" class="form-control form-control-sm mb-1" placeholder="Search" aria-label="Search" onkeyup="listSearch(this)">
                 <div class="overflow-auto" style="max-height: 120px;">
@@ -83,18 +64,16 @@
                   </ul>
                 </div>
               {% else %}
-                <div class="text-muted">
-                  No members found
-                </div>
+              <input class="form-control" type="text" value="Aucun membre" rows="3" disabled readonly>
               {% endif %}
             </div>
           </div>
-          <hr class="mx-n3">
-          <!-- Button on all width with same margin -->
           <div class="d-grid gap-2">
-            <button type="button" class="btn btn-primary" onclick="window.location.href = '{% url 'task-create' project.id %}'">Ajouter une tâche</button>
+            <a href="{% url 'project-update' project.id %}" class="btn btn-primary btn-lg">Modifier</a>
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#project{{ project.id }}Modal">
+              Supprimer
+            </button>
           </div>
-            </div>
         </div>
       </div>
     </div>
