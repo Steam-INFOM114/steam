@@ -22,6 +22,10 @@ class ProjectListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         queryset = super().get_queryset()
+
+        if user.is_staff:
+            return queryset
+
         return (queryset.filter(members=user) | queryset.filter(owner=user)).distinct()
 
 
@@ -33,15 +37,18 @@ class ProjectDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         project = self.get_object()
         user = self.request.user
-        return user == project.owner or user in project.members.all()
+        return user == project.owner or \
+               user in project.members.all() or \
+               user.is_staff
 
-
-# TODO: authorization
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'project/create_update.html'
     success_url = reverse_lazy('project-list')
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -66,7 +73,9 @@ class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         project = self.get_object()
-        return self.request.user == project.owner
+        user = self.request.user
+        return user == project.owner or \
+               user.is_staff
 
 
 class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -75,7 +84,9 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         project = self.get_object()
-        return self.request.user == project.owner
+        user = self.request.user
+        return user == project.owner or \
+               user.is_staff
 
 class ProjectRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
