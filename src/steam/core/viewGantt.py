@@ -275,12 +275,13 @@ def validate_update_task(*args,**kwargs):
         if triggered == 'validate1-update-button.n_clicks':
             id_clicked = int(args[6]['points'][0]['customdata'][2])
             task = Task.objects.get(id=id_clicked)
-            if type(args[1]) is not list:
+            if type(args[1]) is not list and args[1] != '':
                 task.name = args[1]
             if type(args[2]) is not list:
                 task.description = args[2]
-            task.start_date = args[3]
-            task.end_date = args[4]
+            if datetime.strptime(args[3], '%Y-%m-%d') <= datetime.strptime(args[4], '%Y-%m-%d'):
+                task.start_date = args[3]
+                task.end_date = args[4]
             task.status = get_string_statut_id(args[5])
             task.save()
 
@@ -299,7 +300,7 @@ def validate_update_meeting(*args,**kwargs):
         if triggered == 'validate2-update-button.n_clicks':
             id_clicked = int(args[4]['points'][0]['customdata'][2])
             meeting = Meeting.objects.get(id=id_clicked)
-            if type(args[1]) is not list:
+            if type(args[1]) is not list and args[1] != '':
                 meeting.name = args[1]
             if type(args[2]) is not list:
                 meeting.description = args[2]
@@ -343,11 +344,11 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.Span('Date de début*',id="date-debut1"),
                 html.Br(),
-                html.Div([dcc.DatePickerSingle(id='startdate', month_format='MMM Do, YY', placeholder='MMM Do, YY')], className="dash-bootstrap"),
+                html.Div([dcc.DatePickerSingle(id='startdate', month_format='DD/MM/YYYY', placeholder='MMM Do, YY', display_format='DD/MM/YYYY')], className="dash-bootstrap"),
                 html.Br(),
                 html.Span('Date de fin*',id="date-fin1"),
                 html.Br(),
-                dcc.DatePickerSingle(id='enddate', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
+                dcc.DatePickerSingle(id='enddate', month_format='DD/MM/YYYY', placeholder='MMM Do, YY', display_format='DD/MM/YYYY'),
                 html.Br(),
                 html.Br(),
                 html.Span('Status*',id="statut1"),
@@ -375,7 +376,7 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.Span('Date*',id="date2"),
                 html.Br(),
-                dcc.DatePickerSingle(id='date', month_format='MMM Do, YY', placeholder='MMM Do, YY'),
+                dcc.DatePickerSingle(id='date', month_format='DD/MM/YYYY', placeholder='MMM Do, YY', display_format='DD/MM/YYYY'),
                 html.Br(),
                 html.Br(),
                 dbc.Button("Valider", id="validate2-update-button", color="primary", className="me-1"),
