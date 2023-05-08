@@ -1,14 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.http import Http404
-from .models import Project, Task
-from .forms import ProjectForm, TaskForm, CustomUserCreationForm
+from .models import Project, Task, Resource
+from .forms import ProjectForm, TaskForm, CustomUserCreationForm, ResourceForm
 from django.http import JsonResponse
 
 
@@ -101,6 +100,116 @@ class ProjectRegisterView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         return JsonResponse({'error': 'GET method not allowed'}, status=405)
+
+
+class ResourceListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Resource
+    template_name = 'resource/resource_list.html'
+    context_object_name = 'resources'
+
+    def get_queryset(self):
+        user = self.request.user
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        queryset = super().get_queryset()
+
+        is_staff = user.is_staff
+        is_owner = user == project.owner
+        is_member = user in project.members.all()
+
+        if is_staff or is_owner:
+            queryset_filtered = queryset.filter(project=project)
+        elif is_member:
+            queryset_filtered = queryset.filter(
+                project=project, is_hidden=False)
+        else:
+            queryset_filtered = queryset.none()
+
+        return queryset_filtered
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        context['pk'] = self.kwargs['pk']
+        context['project'] = project
+        return context
+
+    def test_func(self):
+        user = self.request.user
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        is_staff = user.is_staff
+        is_owner = user == project.owner
+        is_member = user in project.members.all()
+        return is_staff or is_owner or is_member
+
+
+class ResourceDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Resource
+    template_name = 'resource/resource_detail.html'
+    context_object_name = 'resource'
+
+    def test_func(self):
+        user = self.request.user
+        resource = self.get_object()
+        project = resource.project
+        is_staff = user.is_staff
+        is_owner = user == project.owner
+        is_member = user in project.members.all()
+
+        return (is_member and not resource.is_hidden) or is_staff or is_owner
+
+
+class ResourceCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Resource
+    form_class = ResourceForm
+    template_name = "resource/resource_form.html"
+
+    def form_valid(self, form):
+        form.instance.project_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    def test_func(self):
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        user = self.request.user
+        return user == project.owner or \
+            user.is_staff
+
+    def get_success_url(self):
+        return reverse_lazy('project-resource-list', kwargs={'pk': self.kwargs['pk']})
+
+
+class ResourceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Resource
+    form_class = ResourceForm
+    template_name = 'resource/resource_form.html'
+
+    def test_func(self):
+        resource = self.get_object()
+        project = resource.project
+        user = self.request.user
+        return user == project.owner or \
+            user.is_staff
+
+    def get_success_url(self):
+        resource = self.get_object()
+        project_id = resource.project.id
+        return reverse_lazy('project-resource-list', kwargs={'pk': project_id})
+
+
+class ResourceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Resource
+
+    def test_func(self):
+        resource = self.get_object()
+        project = resource.project
+        user = self.request.user
+        return user == project.owner or \
+            user.is_staff
+
+    def get_success_url(self):
+        resource = self.get_object()
+        project_id = resource.project.id
+        return reverse_lazy('project-resource-list', kwargs={'pk': project_id})
+
 
 class TaskDetail(DetailView):
     model = Task

@@ -5,6 +5,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<ul class="nav nav-tabs mt-4">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Détails</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Tâches</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'project-resource-list' pk=project.pk %}">Ressources</a>
+  </li>
+</ul>
 {% with list_id="members_group_list" %}
 <div class="container mt-4 mb-4">
   <div class="row d-flex justify-content-center align-items-center h-100">
