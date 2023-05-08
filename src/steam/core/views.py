@@ -280,6 +280,22 @@ class MeetingCreate(CreateView):
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('project-task-list')
 
+    def get_success_url(self):
+        return reverse_lazy('project-task-list', kwargs={'pk': self.kwargs['pk']})
+
+    def get_form_kwargs(self):
+        kwargs = super(MeetingCreate, self).get_form_kwargs()
+        kwargs['project_id'] = self.kwargs['pk']  # add project_id to form kwargs
+        return kwargs
+
+    # If project id is not in db,raise 404 error
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.project = Project.objects.get(id=self.kwargs['pk'])
+        except Project.DoesNotExist:
+            raise Http404('Project does not exist')
+        return super(MeetingCreate, self).dispatch(request, *args, **kwargs)
+
 def loginPage(request):
     if request.user.is_authenticated:
         return redirect('project-list')
