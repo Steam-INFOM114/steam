@@ -232,17 +232,20 @@ class TaskCreate(CreateView):
     model = Task
     form_class = TaskForm
     template_name = "tasks/task_form.html"
-    success_url = reverse_lazy('task-list')
+    success_url = reverse_lazy('project-task-list')
+
+    def get_success_url(self):
+        return reverse_lazy('project-task-list', kwargs={'pk': self.kwargs['pk']})
 
     def get_form_kwargs(self):
         kwargs = super(TaskCreate, self).get_form_kwargs()
-        kwargs['project_id'] = self.kwargs['project_id']  # add project_id to form kwargs
+        kwargs['project_id'] = self.kwargs['pk']  # add project_id to form kwargs
         return kwargs
 
     # If project id is not in db,raise 404 error
     def dispatch(self, request, *args, **kwargs):
         try:
-            self.project = Project.objects.get(id=self.kwargs['project_id'])
+            self.project = Project.objects.get(id=self.kwargs['pk'])
         except Project.DoesNotExist:
             raise Http404('Project does not exist')
         return super(TaskCreate, self).dispatch(request, *args, **kwargs)
@@ -251,27 +254,31 @@ class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = "tasks/task_form.html"
-    success_url = reverse_lazy('task-list')
+
+    def get_success_url(self):
+        return reverse_lazy('project-task-list', kwargs={'pk': self.kwargs['pk']})
 
 class MeetingUpdate(UpdateView):
     model = Meeting
     form_class = MeetingForm
     template_name = "tasks/task_form.html"
-    success_url = reverse_lazy('task-list')
+    success_url = reverse_lazy('project-task-list')
 
 class TaskDeleteView(DeleteView):
     model = Task
-    success_url = reverse_lazy('task-list')
+
+    def get_success_url(self):
+        return reverse_lazy('project-task-list', kwargs={'pk': self.kwargs['pk']})
 
 class MeetingDeleteView(DeleteView):
     model = Meeting
-    success_url = reverse_lazy('task-list')
+    success_url = reverse_lazy('project-task-list')
 
 class MeetingCreate(CreateView):
     model = Meeting
     form_class = MeetingForm
     template_name = "tasks/task_form.html"
-    success_url = reverse_lazy('task-list')
+    success_url = reverse_lazy('project-task-list')
 
 def loginPage(request):
     if request.user.is_authenticated:
