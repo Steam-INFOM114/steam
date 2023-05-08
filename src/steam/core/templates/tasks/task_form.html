@@ -11,7 +11,7 @@
         <div class="col-xl-9">
             <div class="card">
                 <div class="card-header">
-                    <h2>{% if task.pk %}Modifier {% elif meeting.pk %} Modifier {% else %}Créer{% endif %} {% if form.status %} une tâche {% else %} une réunion {% endif %}</h2>
+                    <h2>Créer {% if form.status %} une tâche {% else %} une réunion {% endif %}</h2>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="">
