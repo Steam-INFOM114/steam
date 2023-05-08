@@ -65,8 +65,8 @@ class Resource(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     file = models.FileField(upload_to='resources/', validators=[
-            FileExtensionValidator(['jpg', 'png', 'pdf'],
-            message='Seuls les fichiers avec les extensions .txt, .pdf ou .docx sont autorisés.')
+            FileExtensionValidator(['jpg', 'png', 'pdf', 'docx', 'xlsx', 'txt'],
+            message='Seuls les fichiers avec les extensions .jpg, .png, .pdf, .docx, .xlsx ou .txt sont autorisés.')
         ])
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_hidden = models.BooleanField(default=False)

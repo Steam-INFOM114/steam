@@ -28,8 +28,8 @@ class ProjectForm(forms.ModelForm):
             # TODO: localization of placeholders
             'name': forms.TextInput(attrs={'placeholder': 'Nom du projet', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': 'Description du projet', 'class': 'form-control', 'rows': 3}),
-            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d'),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d'),
             'is_archived': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
@@ -73,8 +73,8 @@ class TaskForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Nom de la tâche', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': 'Description de la tâche', 'class': 'form-control', 'rows': 3}),
-            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d'),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d'),
             'status': forms.Select(attrs={'class': 'form-select'}),
             'project': forms.Select(attrs={'class': 'form-control'}),
         }
