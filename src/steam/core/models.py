@@ -65,8 +65,8 @@ class Resource(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     file = models.FileField(upload_to='resources/', validators=[
-            FileExtensionValidator(['jpg', 'png', 'pdf'],
-            message='Seuls les fichiers avec les extensions .txt, .pdf ou .docx sont autorisés.')
+            FileExtensionValidator(['jpg', 'png', 'pdf', 'docx', 'xlsx', 'txt'],
+            message='Seuls les fichiers avec les extensions .jpg, .png, .pdf, .docx, .xlsx ou .txt sont autorisés.')
         ])
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_hidden = models.BooleanField(default=False)
@@ -93,6 +93,8 @@ class Task(models.Model):
         max_length=1, choices=CHOICES, default='À commencer')
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='tasks', blank=False)
+    assignees = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='tasks')
 
     def __str__(self):
         return self.name

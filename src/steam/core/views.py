@@ -9,6 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Project, Task, Meeting, Resource
 from .forms import ProjectForm, TaskForm, CustomUserCreationForm, MeetingForm, ResourceForm
 from django.http import JsonResponse
+from django.http import Http404
 
 
 User = get_user_model()
@@ -22,6 +23,10 @@ class ProjectListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         queryset = super().get_queryset()
+
+        if user.is_staff:
+            return queryset
+
         return (queryset.filter(members=user) | queryset.filter(owner=user)).distinct()
 
 
@@ -33,15 +38,18 @@ class ProjectDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         project = self.get_object()
         user = self.request.user
-        return user == project.owner or user in project.members.all()
+        return user == project.owner or \
+               user in project.members.all() or \
+               user.is_staff
 
-
-# TODO: authorization
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'project/create_update.html'
     success_url = reverse_lazy('project-list')
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -66,7 +74,9 @@ class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         project = self.get_object()
-        return self.request.user == project.owner
+        user = self.request.user
+        return user == project.owner or \
+               user.is_staff
 
 
 class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -75,7 +85,9 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         project = self.get_object()
-        return self.request.user == project.owner
+        user = self.request.user
+        return user == project.owner or \
+               user.is_staff
 
 class ProjectRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
@@ -221,6 +233,19 @@ class TaskCreate(CreateView):
     form_class = TaskForm
     template_name = "tasks/task_form.html"
     success_url = reverse_lazy('task-list')
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreate, self).get_form_kwargs()
+        kwargs['project_id'] = self.kwargs['project_id']  # add project_id to form kwargs
+        return kwargs
+
+    # If project id is not in db,raise 404 error
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.project = Project.objects.get(id=self.kwargs['project_id'])
+        except Project.DoesNotExist:
+            raise Http404('Project does not exist')
+        return super(TaskCreate, self).dispatch(request, *args, **kwargs)
 
 class TaskUpdate(UpdateView):
     model = Task
