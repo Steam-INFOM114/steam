@@ -25,14 +25,16 @@ config = {'displaylogo': False,
           }
 
 # Generate data and return the Gantt chart
-def generate_data():
+def generate_data(id):
     #data gathering
 
     #df = pd.DataFrame()
     df = pd.DataFrame(list(Task.objects.all().values()))
+    df = df.loc[df['project_id'] == id]
 
     #df2 = pd.DataFrame()
     df2 = pd.DataFrame(list(Meeting.objects.all().values()))
+    df2 = df2.loc[df2['project_id'] == id]
 
     df2 = df2.reset_index()
     for i, row in df2.iterrows():
@@ -104,9 +106,10 @@ def generate_data():
     Input('task-form-output', 'children'),
     Input('meeting-form-output', 'children'),
     State('click-data', 'children'),
-    State('graph', 'clickData'))
+    State('graph', 'clickData'),
+    State('id','value'))
 def update_gantt(*args,**kwargs):
-    return generate_data()
+    return generate_data(args[5])
 
 # Display the information of the selected item
 @app.callback(
@@ -325,12 +328,12 @@ app.layout = dbc.Container([
         dbc.CardBody([
             dcc.Graph(
                 id='graph',
-                figure=generate_data(),
+                figure=generate_data(1),
                 config=config
             ),
         ])]
     ),
-
+    dcc.Input(id = 'id', value = None, persistence=False, style = {'display':'none'}),
     html.Div([
         html.Pre(id='click-data', style=styles['pre']),
     ], className='three columns'),
@@ -416,4 +419,4 @@ def gantt(request, **kwargs):
     # Get the project or 404
     project = get_object_or_404(Project, pk=kwargs['pk'])
 
-    return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': tasks, 'meetings': meetings, 'project': project})
+    return render(request, 'tasks/tasks.html', {'my_app': app, 'tasks': tasks, 'meetings': meetings, 'project': project, 'context' : {'id': {'value': kwargs['pk']}}})

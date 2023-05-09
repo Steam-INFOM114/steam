@@ -29,7 +29,7 @@
 
       {% if tasks or meetings %}
       {% load plotly_dash %}
-      {% plotly_app name='SteamGantt' ratio=0.65%}
+      {% plotly_app name='SteamGantt' ratio=0.65 initial_arguments=context %}
       {% else %}
       <div class="text-center">
         Aucune tâche ou réunion n'a été créée pour ce projet.
