@@ -29,12 +29,10 @@ def generate_data(id):
     #data gathering
 
     #df = pd.DataFrame()
-    df = pd.DataFrame(list(Task.objects.all().values()))
-    df = df.loc[df['project_id'] == id]
+    df = pd.DataFrame(list(Task.objects.filter(project_id=id).values()))
 
     #df2 = pd.DataFrame()
-    df2 = pd.DataFrame(list(Meeting.objects.all().values()))
-    df2 = df2.loc[df2['project_id'] == id]
+    df2 = pd.DataFrame(list(Meeting.objects.filter(project_id=id).values()))
 
     df2 = df2.reset_index()
     for i, row in df2.iterrows():
@@ -328,7 +326,7 @@ app.layout = dbc.Container([
         dbc.CardBody([
             dcc.Graph(
                 id='graph',
-                figure=generate_data(1),
+                #figure=generate_data(0),
                 config=config
             ),
         ])]
