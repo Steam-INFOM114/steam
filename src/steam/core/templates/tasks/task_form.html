@@ -11,14 +11,14 @@
         <div class="col-xl-9">
             <div class="card">
                 <div class="card-header">
-                    <h2>{% if task.pk %}Modifier{% else %}Créer{% endif %} une tâche</h2>
+                    <h2>Créer {% if form.status %} une tâche {% else %} une réunion {% endif %}</h2>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">{% if task.pk %}Modifier{% else %}Créer{% endif %}</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Créer</button>
                         </div>
                     </form>
                 </div>

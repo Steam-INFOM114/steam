@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, ResourceListView, ResourceDetailView, ResourceCreateView, ResourceUpdateView, ResourceDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskList, TaskDeleteView, loginPage, logoutUser, registerPage
+from . import viewGantt
+from .views import MeetingCreate, MeetingUpdate, MeetingDeleteView, ProjectListView, ProjectDetailView, ProjectCreateView, ProjectRegisterView, ProjectUpdateView, ProjectDeleteView, TaskDetail, TaskCreate, TaskUpdate, TaskDeleteView, ResourceDetailView, ResourceCreateView, ResourceUpdateView, ResourceDeleteView, ResourceListView, loginPage, logoutUser, registerPage
 
 
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
          ProjectUpdateView.as_view(), name='project-update'),
     path('project/<int:pk>/delete/',
          ProjectDeleteView.as_view(), name='project-delete'),
+    path('project/register/', ProjectRegisterView.as_view(), name='project-register'),
     path('project/<int:pk>/resources/',
          ResourceListView.as_view(), name='project-resource-list'),
     path('project/<int:pk>/resource/create/',
@@ -24,9 +26,12 @@ urlpatterns = [
          ResourceDeleteView.as_view(), name='resource-delete'),
     path('project/register/', ProjectRegisterView.as_view(),
          name='project-register'),
-    path('tasks/', TaskList.as_view(), name='task-list'),
+    path('project/<int:pk>/tasks/', viewGantt.gantt, name='project-task-list'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
-    path('task/create/<int:project_id>', TaskCreate.as_view(), name='task-create'),
+    path('task/createM/<int:pk>', MeetingCreate.as_view(), name='meeting-create'),
+    path('task/create/<int:pk>', TaskCreate.as_view(), name='task-create'),
     path('task/<int:pk>/update/', TaskUpdate.as_view(), name='task-update'),
+    path('task/<int:pk>/updateM/', MeetingUpdate.as_view(), name='meeting-update'),
     path('task/<int:pk>/delete/', TaskDeleteView.as_view(), name='task-delete'),
+    path('task/<int:pk>/deleteM/', MeetingDeleteView.as_view(), name='meeting-delete'),
 ]
