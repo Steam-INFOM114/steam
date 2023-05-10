@@ -121,7 +121,7 @@ def display_click_data(clickData,a,b,c,stateData):
     if clickData is None:
         return ''
     df = pd.DataFrame(list(Task.objects.all().values()))
-    x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
+    x = df.loc[df['id'] == int(float(clickData['points'][0]['customdata'][2]))]
     if clickData['points'][0]['customdata'][1] == 'Réunion':
         df = pd.DataFrame(list(Meeting.objects.all().values()))
         x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
@@ -237,7 +237,7 @@ def modify_placeholder(*args,**kwargs):
         if triggered == 'update-item-button.n_clicks':
             if args[1]['points'][0]['customdata'][1] != 'Réunion':
                 df = pd.DataFrame(list(Task.objects.all().values()))
-                x = df.loc[df['id'] == int(args[1]['points'][0]['customdata'][2])]
+                x = df.loc[df['id'] == int(float(args[1]['points'][0]['customdata'][2]))]
                 str_start_date = x.astype(str).tail(1).reset_index().loc[0, 'start_date']
                 start_date = datetime.strptime(str_start_date, '%Y-%m-%d')
                 str_end_date = x.astype(str).tail(1).reset_index().loc[0, 'end_date']
@@ -245,7 +245,7 @@ def modify_placeholder(*args,**kwargs):
                 return [x.name,x.description,start_date.date(),end_date.date(),get_string_statut_name(x.status.iloc[0]),"","",None]
             else:
                 df = pd.DataFrame(list(Meeting.objects.all().values()))
-                x = df.loc[df['id'] == int(args[1]['points'][0]['customdata'][2])]
+                x = df.loc[df['id'] == int(float(args[1]['points'][0]['customdata'][2]))]
                 str_date = x.astype(str).tail(1).reset_index().loc[0, 'start_date']
                 date = datetime.strptime(str_date, '%Y-%m-%d')
                 return ["","",None,None,None,x.name,x.description,date.date()]
@@ -286,7 +286,7 @@ def validate_update_task(*args,**kwargs):
     if da.triggered != []:
         triggered = da.triggered[0]['prop_id']
         if triggered == 'validate1-update-button.n_clicks':
-            id_clicked = int(args[6]['points'][0]['customdata'][2])
+            id_clicked = int(float(args[6]['points'][0]['customdata'][2]))
             task = Task.objects.get(id=id_clicked)
             if type(args[1]) is not list and args[1] != '':
                 task.name = args[1]
