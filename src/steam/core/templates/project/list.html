@@ -147,7 +147,7 @@
                     </div>
                   {% endif %}
                 <a href="{% url 'project-detail' project.id %}" class="btn btn-success btn-sm"><i class="bi bi bi-eye"></i></a>
-                {% if user == project.owner %}
+                {% if user == project.owner or user.is_staff %}
                   <a href="{% url 'project-update' project.id %}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
                   <!-- Button trigger modal -->
                   <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#project{{ project.id }}Modal">
