@@ -377,7 +377,7 @@ app.layout = dbc.Container([
         dbc.CardBody([
             dcc.Graph(
                 id='graph',
-                #figure=generate_data(0),
+                figure=generate_data(-1),
                 config=config
             ),
         ])]
