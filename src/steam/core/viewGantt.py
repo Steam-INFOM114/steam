@@ -62,12 +62,13 @@ def generate_data(id):
                         y="index",
                         color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'},
                         hover_name="name",
-                        hover_data={'name':False,'status':False,'id':False,'index':False},
+                        hover_data={'index':False,'start_date':False,'end_date':False,'status':False,'id':False, 'name':False},
                         text='name',
                       )
 
     fig.update_yaxes(autorange="reversed",visible=False)
     fig.update_layout(clickmode='event+select', height=700, margin={'l': 0, 'b': 0, 'r': 0, 't': 30},legend_title="")
+
 
     fig.update_layout(
         hoverlabel=dict(
