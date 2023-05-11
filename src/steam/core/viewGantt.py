@@ -125,65 +125,74 @@ def display_click_data(clickData,a,b,c,stateData):
     if clickData['points'][0]['customdata'][1] == 'Réunion': # Meeting
         df = pd.DataFrame(list(Meeting.objects.all().values()))
         x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
-        text = html.Form([
+        text = html.Div([
+            dbc.Card([
+                dbc.CardBody([
 
-            # Name
-            html.Div([
-                html.Div([
-                    html.Label('Nom', className='form-label', htmlFor='name'),
-                    dbc.Input(id='name', className='form-control', type='text', value=x.name.iloc[0], disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+                    # Name
+                    html.Div([
+                        html.Div([
+                            html.Label('Nom', className='form-label', htmlFor='name'),
+                            dbc.Input(id='name', className='form-control', type='text', value=x.name.iloc[0], disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
 
-            # Description
-            html.Div([
-                html.Div([
-                    html.Label('Description', className='form-label', htmlFor='description'),
-                    dbc.Textarea(id='description', className='form-control', value=x.description.iloc[0], disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+                    # Description
+                    html.Div([
+                        html.Div([
+                            html.Label('Description', className='form-label', htmlFor='description'),
+                            dbc.Textarea(id='description', className='form-control', value=x.description.iloc[0], disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
 
-            # Date
-            html.Div([
-                html.Div([
-                    html.Label('Date', className='form-label', htmlFor='date'),
-                    dbc.Input(id='date', className='form-control', type='text', value=x.start_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+                    # Date
+                    html.Div([
+                        html.Div([
+                            html.Label('Date', className='form-label', htmlFor='date'),
+                            dbc.Input(id='date', className='form-control', type='text', value=x.start_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
+
+                ]),
+            ]),
         ])
 
     else: # Task
-        text = html.Form([
-            html.Div([
-                html.Div([
-                    html.Label('Nom', className='form-label requiredField', htmlFor='name', style={'font-size': ''}),
-                    dbc.Input(id='name', className='form-control', type='text', value=x.name.iloc[0], disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+        text = html.Div([
+            dbc.Card([
+                dbc.CardBody([
+                        html.Div([
+                        html.Div([
+                            html.Label('Nom', className='form-label requiredField', htmlFor='name', style={'font-size': ''}),
+                            dbc.Input(id='name', className='form-control', type='text', value=x.name.iloc[0], disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
 
-            # Description
-            html.Div([
-                html.Div([
-                    html.Label('Description', className='form-label', htmlFor='description'),
-                    dbc.Textarea(id='description', className='form-control', value=x.description.iloc[0], disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+                    # Description
+                    html.Div([
+                        html.Div([
+                            html.Label('Description', className='form-label', htmlFor='description'),
+                            dbc.Textarea(id='description', className='form-control', value=x.description.iloc[0], disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
 
-            # Start date
-            html.Div([
-                html.Div([
-                    html.Label('Date de début', className='form-label', htmlFor='start_date'),
-                    dbc.Input(id='start_date', className='form-control', type='text', value=x.start_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+                    # Start date
+                    html.Div([
+                        html.Div([
+                            html.Label('Date de début', className='form-label', htmlFor='start_date'),
+                            dbc.Input(id='start_date', className='form-control', type='text', value=x.start_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
 
-            # End date
-            html.Div([
-                html.Div([
-                    html.Label('Date de fin', className='form-label', htmlFor='end_date'),
-                    dbc.Input(id='end_date', className='form-control', type='text', value=x.end_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
-                ], className='mb-3'),
-            ], className='form-group'),
+                    # End date
+                    html.Div([
+                        html.Div([
+                            html.Label('Date de fin', className='form-label', htmlFor='end_date'),
+                            dbc.Input(id='end_date', className='form-control', type='text', value=x.end_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
+                        ], className='mb-3'),
+                    ], className='form-group'),
+                ]),
+            ]),
         ])
     fig.for_each_trace(
         lambda trace: trace.update(visible=False)
@@ -379,9 +388,9 @@ app.layout = dbc.Container([
 
     # delete button and update button
     html.Div([
-        dbc.Button("Modifier", color="primary", className="me-1", id='update-item-button'),
-        dbc.Button("Supprimer", color="danger", className="me-1", id='delete-item-button'),
-    ],id='item-button', style= {'display':'none'}),
+        dbc.Button("Modifier", className="btn btn-primary mt-3", id='update-item-button', style={"width": "100%"}),
+        dbc.Button("Supprimer", className="btn btn-danger mt-3 btn-sm", id='delete-item-button', style={"width": "100%"}),
+    ], id='item-button', className='d-grip gap-2', style= {'display':'none'}),
     html.Div(id='item-output'),
     # the form for the tasks updates
     html.Div(
