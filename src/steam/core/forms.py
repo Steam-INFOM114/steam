@@ -92,7 +92,7 @@ class TaskForm(forms.ModelForm):
 
         # Add assignees values. Only the members of the project and the owner can be assignees
         self.fields['assignees'].queryset =  User.objects.filter(
-            Q(projects__id=p_id) | Q(owned_projects=p_id))
+            Q(projects__id=p_id) | Q(owned_projects=p_id)).distinct()
 
 class MeetingForm(forms.ModelForm):
     assignees = forms.ModelMultipleChoiceField(
