@@ -120,7 +120,7 @@
               </td>
               <td>
                  <!-- Button key trigger modal -->
-                  {% if user == project.owner %}
+                  {% if user == project.owner or user.is_staff %}
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#project{{ project.id }}KeyModal">
                       <i class="bi bi-key"></i>
                     </button>
