@@ -15,8 +15,8 @@ app = DjangoDash('SteamGantt',external_stylesheets=[dbc.themes.BOOTSTRAP])   # r
 
 styles = {
     'pre': {
-        'border': 'thin lightgrey solid',
-        'overflowX': 'scroll'
+        'overflowX': 'scroll',
+        'margin-top': '10px',
     }
 }
 
@@ -122,27 +122,68 @@ def display_click_data(clickData,a,b,c,stateData):
         return ''
     df = pd.DataFrame(list(Task.objects.all().values()))
     x = df.loc[df['id'] == int(float(clickData['points'][0]['customdata'][2]))]
-    if clickData['points'][0]['customdata'][1] == 'Réunion':
+    if clickData['points'][0]['customdata'][1] == 'Réunion': # Meeting
         df = pd.DataFrame(list(Meeting.objects.all().values()))
         x = df.loc[df['id'] == int(clickData['points'][0]['customdata'][2])]
-        text = html.Div([
-            html.Label('Nom:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P(x.name),
-            html.Label('Description:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P("\n".join(wrap(x.description.iloc[0], 140))),
-            html.Label('Date de la réunion:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P(datetime.strptime(clickData['points'][0]['base'],'%Y-%m-%d').strftime('%d/%m/%y'), '%d/%m/%y'),
+        text = html.Form([
+
+            # Name
+            html.Div([
+                html.Div([
+                    html.Label('Nom', className='form-label', htmlFor='name'),
+                    dbc.Input(id='name', className='form-control', type='text', value=x.name.iloc[0], disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
+
+            # Description
+            html.Div([
+                html.Div([
+                    html.Label('Description', className='form-label', htmlFor='description'),
+                    dbc.Textarea(id='description', className='form-control', value=x.description.iloc[0], disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
+
+            # Date
+            html.Div([
+                html.Div([
+                    html.Label('Date', className='form-label', htmlFor='date'),
+                    dbc.Input(id='date', className='form-control', type='text', value=x.start_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
         ])
-    else:
-        text = html.Div([
-            html.Label('Nom:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P(x.name),
-            html.Label('Description:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P("\n".join(wrap(x.description.iloc[0], 140))),
-            html.Label('Date de début:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P(datetime.strptime(clickData['points'][0]['base'],'%Y-%m-%d').strftime('%d/%m/%y'), '%d/%m/%y'),
-            html.Label('Date de fin:', style={'font-weight': 'bold', 'text-decoration': 'underline', 'color': 'red'}),
-            html.P(datetime.strptime(clickData['points'][0]['x'],'%Y-%m-%d').strftime('%d/%m/%y'), '%d/%m/%y'),
+
+    else: # Task
+        text = html.Form([
+            html.Div([
+                html.Div([
+                    html.Label('Nom', className='form-label requiredField', htmlFor='name', style={'font-size': ''}),
+                    dbc.Input(id='name', className='form-control', type='text', value=x.name.iloc[0], disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
+
+            # Description
+            html.Div([
+                html.Div([
+                    html.Label('Description', className='form-label', htmlFor='description'),
+                    dbc.Textarea(id='description', className='form-control', value=x.description.iloc[0], disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
+
+            # Start date
+            html.Div([
+                html.Div([
+                    html.Label('Date de début', className='form-label', htmlFor='start_date'),
+                    dbc.Input(id='start_date', className='form-control', type='text', value=x.start_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
+
+            # End date
+            html.Div([
+                html.Div([
+                    html.Label('Date de fin', className='form-label', htmlFor='end_date'),
+                    dbc.Input(id='end_date', className='form-control', type='text', value=x.end_date.iloc[0].strftime('%d/%m/%y'), disabled=True),
+                ], className='mb-3'),
+            ], className='form-group'),
         ])
     fig.for_each_trace(
         lambda trace: trace.update(visible=False)
@@ -333,7 +374,7 @@ app.layout = dbc.Container([
     ),
     dcc.Input(id = 'id', value = None, persistence=False, style = {'display':'none'}),
     html.Div([
-        html.Pre(id='click-data', style=styles['pre']),
+        html.Div(id='click-data', style=styles['pre']),
     ], className='three columns'),
 
     # delete button and update button
