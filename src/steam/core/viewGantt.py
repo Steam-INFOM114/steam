@@ -501,8 +501,9 @@ def gantt(request, **kwargs):
 
     # Check that the user is a member of the project or the owner
     if not Project.objects.filter(id=kwargs['pk'], members=request.user).exists() \
-        and not Project.objects.filter(id=kwargs['pk'], owner=request.user).exists():
-        return redirect('projects')
+        and not Project.objects.filter(id=kwargs['pk'], owner=request.user).exists() \
+            and not request.user.is_staff:
+        return redirect('project-list')
 
     # Filter the tasks and meetings based on the project id
     tasks = Task.objects.filter(project_id=kwargs['pk'])
