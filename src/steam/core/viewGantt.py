@@ -263,8 +263,8 @@ def hide_show_form_title(*args,**kwargs):
 @app.callback(
     Output('input1', component_property='value'),
     Output('textarea1', component_property='value'),
-    Output('startdate', component_property='date'),
-    Output('enddate', component_property='date'),
+    Output('startdate', component_property='value'),
+    Output('enddate', component_property='value'),
     Output('statut-field1', component_property='value'),
     Output('input2', component_property='value'),
     Output('textarea2', component_property='value'),
@@ -318,8 +318,8 @@ def get_string_statut_id(x):
     Input('validate1-update-button', 'n_clicks'),
     State('input1', 'value'),
     State('textarea1', 'value'),
-    State('startdate', 'date'),
-    State('enddate', 'date'),
+    State('startdate', 'value'),
+    State('enddate', 'value'),
     State('statut-field1', 'value'),
     State('graph', 'clickData'))
 def validate_update_task(*args,**kwargs):
@@ -386,31 +386,55 @@ app.layout = dbc.Container([
     # the form for the tasks updates
     html.Div(
         dbc.Card([
-            dbc.CardHeader("Modifier la tâche sélectionnée"),
             dbc.CardBody([
-                html.Span('Nom*',id="nom1"),
-                html.Br(),
-                dbc.Input(id="input1", type="text", placeholder="", debounce=True),
-                html.Br(),
-                html.Span('Description',id="description1"),
-                html.Br(),
-                dbc.Textarea(id='textarea1',style={'height': 100}),
-                html.Br(),
-                html.Span('Date de début*',id="date-debut1"),
-                html.Br(),
-                html.Div([dcc.DatePickerSingle(id='startdate', month_format='DD/MM/YYYY', placeholder='MMM Do, YY', display_format='DD/MM/YYYY')], className="dash-bootstrap"),
-                html.Br(),
-                html.Span('Date de fin*',id="date-fin1"),
-                html.Br(),
-                dcc.DatePickerSingle(id='enddate', month_format='DD/MM/YYYY', placeholder='MMM Do, YY', display_format='DD/MM/YYYY'),
-                html.Br(),
-                html.Br(),
-                html.Span('Status*',id="statut1"),
-                html.Br(),
-                html.Div([dbc.Select(options=['À commencer', 'En cours', 'Terminé'],id='statut-field1')],id='statut-field1-div'),
-                html.Br(),
-                dbc.Button("Valider", id="validate1-update-button", color="primary", className="me-1"),
-                ])]
+
+                # Name
+                html.Div([
+                    html.Div([
+                        html.Label('Nom*', className='form-label', htmlFor='input1'),
+                        dbc.Input(id='input1', className='form-control', type='text'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Description
+                html.Div([
+                    html.Div([
+                        html.Label('Description', className='form-label', htmlFor='textarea1'),
+                        dbc.Textarea(id='textarea1', className='form-control'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Start date
+                html.Div([
+                    html.Div([
+                        html.Label('Date de début*', className='form-label', htmlFor='startdate'),
+                        dbc.Input(id='startdate', className='form-control date-input', type='date'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # End date
+                html.Div([
+                    html.Div([
+                        html.Label('Date de fin*', className='form-label', htmlFor='enddate'),
+                        dbc.Input(id='enddate', className='form-control date-input', type='date'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Status
+                html.Div([
+                    html.Div([
+                        html.Label('Status*', className='form-label', htmlFor='statut-field1'),
+                        dbc.Select(options=[choice[1] for choice in Task.CHOICES],id='statut-field1'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Validate button
+                html.Div(
+                    dbc.Button("Valider", id="validate1-update-button", className="btn btn-primary mt-3", style={"width": "100%"}),
+                    className='d-grip gap-2'
+                )
+
+            ])], className='mt-3 mb-3'
         ),id='task-form', style= {'display':'none'}
     ),
     html.Div(id='task-form-output'),
@@ -418,23 +442,42 @@ app.layout = dbc.Container([
     # the form for the meetings updates
     html.Div(
         dbc.Card([
-            dbc.CardHeader("Modifier la réunion sélectionnée"),
+            dbc.CardHeader(
+                html.H4("Modifier la réunion sélectionnée"),
+            ),
             dbc.CardBody([
-                html.Span('Nom*',id="nom2"),
-                html.Br(),
-                dbc.Input(id="input2", type="text", placeholder="", debounce=True),
-                html.Br(),
-                html.Span('Description',id="description2"),
-                html.Br(),
-                dbc.Textarea(id='textarea2',style={'height': 100}),
-                html.Br(),
-                html.Span('Date*',id="date2"),
-                html.Br(),
-                dcc.DatePickerSingle(id='date', month_format='DD/MM/YYYY', placeholder='MMM Do, YY', display_format='DD/MM/YYYY'),
-                html.Br(),
-                html.Br(),
-                dbc.Button("Valider", id="validate2-update-button", color="primary", className="me-1"),
-                ])]
+
+                # Name
+                html.Div([
+                    html.Div([
+                        html.Label('Nom*', className='form-label', htmlFor='input2'),
+                        dbc.Input(id='input2', className='form-control', type='text'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Description
+                html.Div([
+                    html.Div([
+                        html.Label('Description', className='form-label', htmlFor='textarea2'),
+                        dbc.Textarea(id='textarea2', className='form-control'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Date
+                html.Div([
+                    html.Div([
+                        html.Label('Date*', className='form-label', htmlFor='date'),
+                        dbc.Input(id='date', className='form-control date-input', type='date'),
+                    ], className='mb-3'),
+                ], className='form-group'),
+
+                # Validate button
+                html.Div(
+                    dbc.Button("Valider", id="validate2-update-button", className="btn btn-primary mt-3", style={"width": "100%"}),
+                    className='d-grip gap-2'
+                )
+
+            ])], className='mt-3 mb-3'
         ),id='meeting-form', style= {'display':'none'}
     ),
     html.Div(id='meeting-form-output'),
