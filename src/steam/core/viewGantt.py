@@ -62,7 +62,7 @@ def generate_data(id):
                         y="index",
                         color_discrete_map={'1': '#3CDBEA','2': '#FD8A17', '3': '#63D233'},
                         hover_name="name",
-                        hover_data={'index':False,'start_date':False,'end_date':False,'status':False,'id':False, 'name':False},
+                        hover_data={'name':False,'status':False,'id':False,'index':False},
                         text='name',
                       )
 
