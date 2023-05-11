@@ -23,7 +23,9 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between">
           <h2>Détails du projet</h2>
-          <h6>Clef : {{project.key}}</h6>
+          {% if user == project.owner or user.is_staff %}
+            <h6>Clef : {{project.key}}</h6>
+          {% endif %}
         </div>
         <div class="card-body">
           <div class="form-group">
