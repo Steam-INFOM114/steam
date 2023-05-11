@@ -36,6 +36,11 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'project-list' %}">Projets</a>
           </li>
+          {% if user.is_authenticated and user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin:index' %}">Administration </a>
+            </li>
+          {% endif %}
           {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
@@ -46,6 +51,10 @@
           </li>
           {% endif %}
         </ul>
+
+        {% if user.is_authenticated %}
+          <div style="color: white; margin-left: auto">{{user.username}}</div>
+        {% endif %}
       </div>
     </div>
   </nav>
