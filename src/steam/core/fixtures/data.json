@@ -1,110 +1,409 @@
 [
   {
-    "model": "core.myuser",
+    "model": "core.project",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$260000$34TfWkVvHLgA0PIQSPXamk$0ikNKahEbLE5Yp3+pcSm6HsWOFLrDs20iqGO8KEybaY=",
-      "last_login": null,
-      "is_superuser": true,
-      "username": "user1",
-      "first_name": "",
-      "last_name": "",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2023-04-25T20:30:18.558Z",
-      "email": "user1@example.com",
-      "groups": [],
-      "user_permissions": []
+      "name": "LumièreVive",
+      "description": "LumièreVive est une application de réalité augmentée révolutionnaire qui permet aux utilisateurs d'explorer l'univers et d'obtenir des informations détaillées sur les corps célestes. Des constellations aux galaxies lointaines, cette application vous offre les merveilles de l'espace au bout de vos doigts.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-14",
+      "created_at": "2023-05-10T17:42:28.379Z",
+      "updated_at": "2023-05-10T17:42:28.379Z",
+      "is_archived": false,
+      "owner": 1,
+      "key": "67SXY",
+      "members": [
+        2,
+        3,
+        4
+      ]
     }
   },
   {
-    "model": "core.myuser",
+    "model": "core.project",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$260000$nVBI5SUj0wskXroWyQHKS2$/jLGDYuQ/PwS6eyRyf4ezCpVevyHlKT9HCKTpr7M+2g=",
-      "last_login": null,
-      "is_superuser": false,
-      "username": "user2",
-      "first_name": "",
-      "last_name": "",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2023-04-25T20:30:19.032Z",
-      "email": "user2@example.com",
-      "groups": [],
-      "user_permissions": []
+      "name": "AquaJardin",
+      "description": "AquaJardin est un système aquaponique innovant qui combine l'élevage de poissons avec la culture hydroponique des plantes. Cet écosystème autosuffisant offre une source fraîche et biologique de poissons et de légumes, le tout dans une installation compacte et efficace. Dites adieu aux méthodes agricoles traditionnelles et adoptez l'avenir de l'agriculture durable avec AquaJardin.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-21",
+      "created_at": "2023-05-10T18:25:55.183Z",
+      "updated_at": "2023-05-10T18:25:55.184Z",
+      "is_archived": false,
+      "owner": 1,
+      "key": "UHJEB",
+      "members": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
     }
   },
   {
-    "model": "core.myuser",
+    "model": "core.project",
     "pk": 3,
     "fields": {
-      "password": "pbkdf2_sha256$260000$D6Eo0200B8gJzNP9LriIFQ$puzmq2oyzvoaWT3e5/5yuvdWxHeF44sJTcEdmpgVVYs=",
-      "last_login": null,
-      "is_superuser": false,
-      "username": "user3",
-      "first_name": "",
-      "last_name": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2023-04-25T20:30:19.430Z",
-      "email": "user3@example.com",
-      "groups": [],
-      "user_permissions": []
+      "name": "NexusLink",
+      "description": "NexusLink est une plateforme de communication avancée qui connecte de manière transparente des personnes du monde entier. Grâce à des capacités de traduction en temps réel et des fonctionnalités améliorées de visioconférence, NexusLink brise les barrières linguistiques et permet une collaboration fluide et productive au-delà des frontières.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-28",
+      "created_at": "2023-05-10T18:32:51.438Z",
+      "updated_at": "2023-05-10T18:32:51.438Z",
+      "is_archived": false,
+      "owner": 1,
+      "key": "JZPMS",
+      "members": [
+        2,
+        3,
+        4
+      ]
     }
   },
   {
-    "model": "core.myuser",
+    "model": "core.project",
     "pk": 4,
     "fields": {
-      "password": "pbkdf2_sha256$260000$UHaZMQV0tsfsfGNHNrwXhu$V3ORhqgw/xg4RjTXZQnyoJwmmrMHnqgO5a4yjpeNOhw=",
-      "last_login": null,
-      "is_superuser": false,
-      "username": "user4",
-      "first_name": "",
-      "last_name": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2023-04-25T20:30:19.763Z",
-      "email": "user4@example.com",
-      "groups": [],
-      "user_permissions": []
+      "name": "RoboChef",
+      "description": "RoboChef est un robot culinaire de pointe qui révolutionne la façon dont nous préparons les repas. Équipé d'intelligence artificielle et d'une vaste base de données de recettes, RoboChef peut concocter des plats gastronomiques adaptés à vos préférences gustatives. Dites adieu au stress en cuisine et laissez RoboChef s'occuper de tous vos besoins culinaires.",
+      "start_date": "2023-05-15",
+      "end_date": "2023-05-28",
+      "created_at": "2023-05-10T18:33:16.412Z",
+      "updated_at": "2023-05-10T18:33:16.412Z",
+      "is_archived": false,
+      "owner": 1,
+      "key": "2GX85",
+      "members": [
+        2,
+        3
+      ]
     }
   },
   {
-    "model": "core.myuser",
+    "model": "core.project",
     "pk": 5,
     "fields": {
-      "password": "pbkdf2_sha256$260000$KxZdZXHqysUfgV9W91GkVt$E+SjG+rXfxBECuDKi4P7QPce57Lg/BTFYGMG+pKj5TE=",
-      "last_login": null,
-      "is_superuser": false,
-      "username": "user5",
-      "first_name": "",
-      "last_name": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2023-04-25T20:30:20.139Z",
-      "email": "user5@example.com",
-      "groups": [],
-      "user_permissions": []
+      "name": "SolarScribe",
+      "description": "SolarScribe est un système intelligent de nettoyage de panneaux solaires alimenté par l'intelligence artificielle et la robotique. Cet appareil autonome non seulement élimine la saleté et les débris des panneaux solaires, mais optimise également leur positionnement pour une absorption maximale de l'énergie. Avec SolarScribe, exploiter la puissance du soleil n'a jamais été aussi facile.",
+      "start_date": "2023-05-11",
+      "end_date": "2023-05-31",
+      "created_at": "2023-05-10T18:33:57.235Z",
+      "updated_at": "2023-05-10T18:33:57.235Z",
+      "is_archived": false,
+      "owner": 1,
+      "key": "NL85Y",
+      "members": [
+        2,
+        3
+      ]
     }
   },
   {
-    "model": "core.myuser",
+    "model": "core.project",
     "pk": 6,
     "fields": {
-      "password": "pbkdf2_sha256$260000$3vlPlYDPzHZL4PBmc7DMGc$YQjsevtAgkxzRFkfIcCW9xTZDZj2DcPUoRsOdeXyI1w=",
-      "last_login": null,
-      "is_superuser": false,
-      "username": "user6",
-      "first_name": "",
-      "last_name": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2023-04-25T20:30:20.500Z",
-      "email": "user6@example.com",
-      "groups": [],
-      "user_permissions": []
+      "name": "ZenForme",
+      "description": "ZenForme est une application de fitness holistique qui va au-delà de l'exercice physique. Elle combine des programmes d'entraînement personnalisés avec des exercices de pleine conscience, des séances de méditation et des conseils en nutrition pour vous aider à atteindre un état de bien-être total. Dites adieu aux routines de fitness fragmentées et adoptez une approche équilibrée de la santé avec ZenForme.",
+      "start_date": "2023-05-10",
+      "end_date": "2023-05-17",
+      "created_at": "2023-05-10T18:34:29.688Z",
+      "updated_at": "2023-05-10T18:34:29.688Z",
+      "is_archived": false,
+      "owner": 1,
+      "key": "F2AGH",
+      "members": [
+        5,
+        6
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 1,
+    "fields": {
+      "name": "Développement de l'application mobile LumièreVive",
+      "description": "- Concevoir et programmer les fonctionnalités principales de l'application LumièreVive.\r\n- Assurer la compatibilité avec les plateformes iOS et Android.\r\n- Optimiser les performances de l'application pour une expérience utilisateur fluide.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-10",
+      "status": "3",
+      "project": 1,
+      "assignees": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 2,
+    "fields": {
+      "name": "Intégration de la réalité augmentée",
+      "description": "- Implémenter la technologie de réalité augmentée pour permettre l'exploration immersive de l'univers.\r\n- Intégrer des modèles 3D et des informations contextuelles sur les corps célestes.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-09",
+      "status": "3",
+      "project": 1,
+      "assignees": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 3,
+    "fields": {
+      "name": "Collecte et intégration de données astronomiques",
+      "description": "- Rassembler des données précises sur les constellations, les étoiles, les planètes et les galaxies.\r\n- Intégrer les informations dans la base de données de l'application LumièreVive.",
+      "start_date": "2023-05-09",
+      "end_date": "2023-05-13",
+      "status": "2",
+      "project": 1,
+      "assignees": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 4,
+    "fields": {
+      "name": "Conception de l'interface utilisateur",
+      "description": "- Créer une interface utilisateur conviviale et intuitive pour une navigation aisée dans l'application.\r\n- Concevoir des icônes, des boutons et des éléments visuels attrayants en accord avec le thème cosmique de LumièreVive.",
+      "start_date": "2023-05-10",
+      "end_date": "2023-05-12",
+      "status": "3",
+      "project": 1,
+      "assignees": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 5,
+    "fields": {
+      "name": "Implémentation de fonctionnalités de recherche",
+      "description": "- Développer un système de recherche avancée permettant aux utilisateurs de trouver rapidement des informations spécifiques sur les objets célestes.",
+      "start_date": "2023-05-13",
+      "end_date": "2023-05-14",
+      "status": "1",
+      "project": 1,
+      "assignees": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 6,
+    "fields": {
+      "name": "Personnalisation des paramètres utilisateur",
+      "description": "- Mettre en place des options de personnalisation pour permettre aux utilisateurs de régler les paramètres de l'application selon leurs préférences.",
+      "start_date": "2023-05-12",
+      "end_date": "2023-05-13",
+      "status": "2",
+      "project": 1,
+      "assignees": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 7,
+    "fields": {
+      "name": "Intégration des fonctionnalités de partage",
+      "description": "- Permettre aux utilisateurs de partager des découvertes astronomiques avec leurs amis sur les réseaux sociaux.\r\n- Implémenter des fonctionnalités d'enregistrement d'écrans et de captures d'écran pour faciliter le partage visuel.",
+      "start_date": "2023-05-13",
+      "end_date": "2023-05-14",
+      "status": "1",
+      "project": 1,
+      "assignees": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 8,
+    "fields": {
+      "name": "Support technique et gestion des retours utilisateurs",
+      "description": "- Fournir un support technique aux utilisateurs et répondre à leurs questions ou problèmes liés à l'application LumièreVive.\r\n- Collecter les retours utilisateurs et les suggestions d'amélioration pour guider les mises à jour futures de l'application.",
+      "start_date": "2023-05-11",
+      "end_date": "2023-05-14",
+      "status": "2",
+      "project": 1,
+      "assignees": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 9,
+    "fields": {
+      "name": "Préparation du réservoir d'eau",
+      "description": "- Remplir le réservoir d'eau avec une quantité appropriée d'eau propre et traitée.\r\n- Vérifier et ajuster les niveaux de pH et de température de l'eau.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-11",
+      "status": "3",
+      "project": 2,
+      "assignees": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 10,
+    "fields": {
+      "name": "Introduction des poissons",
+      "description": "- Sélectionner les espèces de poissons adaptées au système aquaponique.\r\n- Introduire les poissons dans le réservoir et s'assurer de leur adaptation progressive à leur nouvel environnement.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-09",
+      "status": "3",
+      "project": 2,
+      "assignees": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 11,
+    "fields": {
+      "name": "Plantation des semis",
+      "description": "- Préparer les paniers de culture pour accueillir les semis.\r\n- Planter les semis de légumes ou d'herbes dans les paniers et les placer dans le système aquaponique.",
+      "start_date": "2023-05-10",
+      "end_date": "2023-05-11",
+      "status": "3",
+      "project": 2,
+      "assignees": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 12,
+    "fields": {
+      "name": "Surveillance des paramètres de l'eau",
+      "description": "- Contrôler régulièrement les niveaux de pH, d'ammoniac, de nitrites et de nitrates dans l'eau.\r\n- Effectuer les ajustements nécessaires pour maintenir des conditions optimales pour les poissons et les plantes.",
+      "start_date": "2023-05-08",
+      "end_date": "2023-05-13",
+      "status": "2",
+      "project": 2,
+      "assignees": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 13,
+    "fields": {
+      "name": "Alimentation des poissons",
+      "description": "- Distribuer une alimentation équilibrée et adaptée aux besoins des poissons.\r\n- Surveiller attentivement la quantité d'alimentation pour éviter le gaspillage ou la suralimentation.",
+      "start_date": "2023-05-10",
+      "end_date": "2023-05-17",
+      "status": "2",
+      "project": 2,
+      "assignees": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 14,
+    "fields": {
+      "name": "Entretien du système de filtration",
+      "description": "- Nettoyer régulièrement les filtres pour éliminer les débris et les accumulations indésirables.\r\n- Vérifier le bon fonctionnement du système de filtration pour assurer une qualité de l'eau optimale.",
+      "start_date": "2023-05-15",
+      "end_date": "2023-05-17",
+      "status": "1",
+      "project": 2,
+      "assignees": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 15,
+    "fields": {
+      "name": "Taille et élagage des plantes",
+      "description": "- Surveiller la croissance des plantes et procéder à la taille et à l'élagage réguliers pour maintenir leur santé et favoriser une production optimale.",
+      "start_date": "2023-05-18",
+      "end_date": "2023-05-20",
+      "status": "1",
+      "project": 2,
+      "assignees": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "core.task",
+    "pk": 16,
+    "fields": {
+      "name": "Contrôle des parasites et des maladies",
+      "description": "- Inspecter régulièrement les poissons et les plantes pour détecter tout signe de parasites ou de maladies.\r\n- Prendre les mesures appropriées pour traiter les problèmes identifiés et prévenir leur propagation.",
+      "start_date": "2023-05-15",
+      "end_date": "2023-05-21",
+      "status": "1",
+      "project": 2,
+      "assignees": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "core.meeting",
+    "pk": 1,
+    "fields": {
+      "name": "Réunion de planification stratégique",
+      "description": "",
+      "start_date": "2023-05-11",
+      "end_date": null,
+      "status": "Réunion",
+      "project": 2
+    }
+  },
+  {
+    "model": "core.meeting",
+    "pk": 2,
+    "fields": {
+      "name": "Séance de brainstorming créatif",
+      "description": "",
+      "start_date": "2023-05-14",
+      "end_date": null,
+      "status": "Réunion",
+      "project": 2
+    }
+  },
+  {
+    "model": "core.meeting",
+    "pk": 3,
+    "fields": {
+      "name": "Réunion de coordination interdépartementale",
+      "description": "",
+      "start_date": "2023-05-15",
+      "end_date": null,
+      "status": "Réunion",
+      "project": 1
+    }
+  },
+  {
+    "model": "core.meeting",
+    "pk": 4,
+    "fields": {
+      "name": "Réunion de revue de conception",
+      "description": "",
+      "start_date": "2023-05-09",
+      "end_date": null,
+      "status": "Réunion",
+      "project": 1
     }
   }
 ]
